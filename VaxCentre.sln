@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34701.34
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VaxCentre.Server", "VaxCentre.Server\VaxCentre.Server.csproj", "{F531662C-C727-47BC-804A-327071778282}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "vaxcentre.client", "vaxcentre.client\vaxcentre.client.esproj", "{836F247B-4885-42DE-A685-369AED69CBD7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F531662C-C727-47BC-804A-327071778282}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F531662C-C727-47BC-804A-327071778282}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F531662C-C727-47BC-804A-327071778282}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F531662C-C727-47BC-804A-327071778282}.Release|Any CPU.Build.0 = Release|Any CPU
+		{836F247B-4885-42DE-A685-369AED69CBD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{836F247B-4885-42DE-A685-369AED69CBD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{836F247B-4885-42DE-A685-369AED69CBD7}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{836F247B-4885-42DE-A685-369AED69CBD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{836F247B-4885-42DE-A685-369AED69CBD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{836F247B-4885-42DE-A685-369AED69CBD7}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {51E32740-1AB6-49F1-9292-7E16F041C6CB}
+	EndGlobalSection
+EndGlobal
