@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using VaxCentre.Server.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,6 +10,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var defaultConnection = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<DBContext>(options =>
+{  
+    options.UseMySql(defaultConnection, ServerVersion.AutoDetect(defaultConnection));
+});
 var app = builder.Build();
 
 app.UseDefaultFiles();
