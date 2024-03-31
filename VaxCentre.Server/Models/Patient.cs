@@ -1,7 +1,10 @@
-﻿namespace VaxCentre.Server.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace VaxCentre.Server.Models
 {
     public class Patient
     {
+        [Key]
         public required string SSID { get; set; }
         public required string password { get; set; }
         public required string firstName { get; set; }
