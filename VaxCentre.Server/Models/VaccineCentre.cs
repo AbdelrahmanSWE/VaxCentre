@@ -2,7 +2,7 @@
 {
     public class VaccineCentre : Account
     {
-        public required string displayName { get; set; }
+        public required string DisplayName { get; set; }
         public required string Address { get; set; }
         public List<Vaccine>? Vaccines { get; set; }
     }

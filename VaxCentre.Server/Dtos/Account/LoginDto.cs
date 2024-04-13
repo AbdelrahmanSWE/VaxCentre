@@ -5,10 +5,10 @@ namespace VaxCentre.Server.Dtos.Account
 {
     public class LoginDto
     {
-        [Required]
+        [Required, NotNull]
         public string? UserName { get; set; }
         
-        [Required]
+        [Required, NotNull]
         public string? Password { get; set; }
     }
 }
