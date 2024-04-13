@@ -1,0 +1,59 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using VaxCentre.Server.Dtos.Account;
+using VaxCentre.Server.Models;
+
+namespace VaxCentre.Server.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AccountController : ControllerBase
+    {
+        private readonly UserManager<Account> _userManager;
+        private readonly SignInManager<Account> _signinManager;
+        public AccountController(UserManager<Account> userManager, SignInManager<Account> signInManager)
+        {
+            _userManager = userManager;
+            _signinManager = signInManager;
+        }
+
+
+        [HttpPost("Register")]
+        public async Task<IActionResult> RegisterPatient(PatientRegisterDto PatientRegisterDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+                var Patient = new Patient
+                {
+                    UserName = PatientRegisterDto.UserName,
+                    Email = PatientRegisterDto.Email,
+                    FirstName = PatientRegisterDto.FirstName,
+                    LastName = PatientRegisterDto.LastName,
+                    SSID = PatientRegisterDto.SSID,
+                    PhoneNumber = PatientRegisterDto.PhoneNumber,
+                    Address = PatientRegisterDto.Address,
+                    AcceptState = 0,
+                };
+                var createdUser = await _userManager.CreateAsync(Patient, PatientRegisterDto.Password);
+                if (createdUser.Succeeded)
+                {
+                    var roleResult = await _userManager.AddToRoleAsync(Patient, "Patient");
+                    if (roleResult.Succeeded)
+                    {
+                        return Ok("Successful register Mr./Mrs. "+ Patient.FirstName);
+                    }
+                    return StatusCode(500, roleResult.Errors);
+                }
+                return StatusCode(500, createdUser.Errors);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message, stackTrace = ex.StackTrace });
+            }
+        }
+
+    }
+}
