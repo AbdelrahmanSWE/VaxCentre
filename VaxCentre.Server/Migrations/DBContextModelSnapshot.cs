@@ -242,6 +242,45 @@ namespace VaxCentre.Server.Migrations
                     b.ToTable("VaccineVaccineCentre");
                 });
 
+            modelBuilder.Entity("VaxCentre.Server.Models.VaccinationReciept", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<int>("Dose1State")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Dose2State")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PatientId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("VaccineCentreId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("VaccineDose1Date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("VaccineDose2Date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("VaccineId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.HasIndex("VaccineCentreId");
+
+                    b.HasIndex("VaccineId");
+
+                    b.ToTable("VaccinationReciepts");
+                });
+
             modelBuilder.Entity("VaxCentre.Server.Models.Vaccine", b =>
                 {
                     b.Property<int>("Id")
@@ -266,20 +305,26 @@ namespace VaxCentre.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("vaccines");
+                    b.ToTable("Vaccines");
+                });
+
+            modelBuilder.Entity("VaxCentre.Server.Models.Account", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasDiscriminator().HasValue("Account");
                 });
 
             modelBuilder.Entity("VaxCentre.Server.Models.Admin", b =>
                 {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+                    b.HasBaseType("VaxCentre.Server.Models.Account");
 
                     b.Property<string>("EmpName")
                         .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .ValueGeneratedOnUpdateSometimes()
                         .HasColumnType("longtext");
 
                     b.HasDiscriminator().HasValue("Admin");
@@ -287,7 +332,7 @@ namespace VaxCentre.Server.Migrations
 
             modelBuilder.Entity("VaxCentre.Server.Models.Patient", b =>
                 {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+                    b.HasBaseType("VaxCentre.Server.Models.Account");
 
                     b.Property<int>("AcceptState")
                         .HasColumnType("int");
@@ -304,11 +349,6 @@ namespace VaxCentre.Server.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .ValueGeneratedOnUpdateSometimes()
-                        .HasColumnType("longtext");
-
                     b.Property<string>("SSID")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -318,15 +358,10 @@ namespace VaxCentre.Server.Migrations
 
             modelBuilder.Entity("VaxCentre.Server.Models.VaccineCentre", b =>
                 {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+                    b.HasBaseType("VaxCentre.Server.Models.Account");
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .ValueGeneratedOnUpdateSometimes()
                         .HasColumnType("longtext");
 
                     b.Property<string>("displayName")
@@ -406,6 +441,33 @@ namespace VaxCentre.Server.Migrations
                         .HasForeignKey("VaccinesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("VaxCentre.Server.Models.VaccinationReciept", b =>
+                {
+                    b.HasOne("VaxCentre.Server.Models.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VaxCentre.Server.Models.VaccineCentre", "VaccineCentre")
+                        .WithMany()
+                        .HasForeignKey("VaccineCentreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VaxCentre.Server.Models.Vaccine", "Vaccine")
+                        .WithMany()
+                        .HasForeignKey("VaccineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+
+                    b.Navigation("Vaccine");
+
+                    b.Navigation("VaccineCentre");
                 });
 #pragma warning restore 612, 618
         }

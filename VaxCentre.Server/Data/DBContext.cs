@@ -11,10 +11,12 @@ namespace VaxCentre.Server.Data
         {
             
         }
+        public DbSet<Account> Accounts { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Admin> Admins { get; set; }
-        public DbSet<VaccineCentre> vaccineCentres { get; set; }
-        public DbSet<Vaccine> vaccines { get; set; }
+        public DbSet<VaccineCentre> VaccineCentres { get; set; }
+        public DbSet<Vaccine> Vaccines { get; set; }
+        public DbSet<VaccinationReciept> VaccinationReciepts { get; set; }
 
     }
 }
