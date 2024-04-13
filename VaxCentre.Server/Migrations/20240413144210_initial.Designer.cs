@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VaxCentre.Server.Data;
 
@@ -11,9 +12,11 @@ using VaxCentre.Server.Data;
 namespace VaxCentre.Server.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20240413144210_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -232,39 +235,39 @@ namespace VaxCentre.Server.Migrations
                     b.Property<string>("AvailableInId")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<int>("VaccinesId")
+                    b.Property<int>("VaccinesID")
                         .HasColumnType("int");
 
-                    b.HasKey("AvailableInId", "VaccinesId");
+                    b.HasKey("AvailableInId", "VaccinesID");
 
-                    b.HasIndex("VaccinesId");
+                    b.HasIndex("VaccinesID");
 
                     b.ToTable("VaccineVaccineCentre");
                 });
 
             modelBuilder.Entity("VaxCentre.Server.Models.Vaccine", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<string>("Description")
+                    b.Property<string>("description")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("GapTime")
+                    b.Property<int?>("gapTime")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Precaution")
+                    b.Property<string>("precaution")
                         .HasColumnType("longtext");
 
-                    b.HasKey("Id");
+                    b.HasKey("ID");
 
                     b.ToTable("vaccines");
                 });
@@ -277,10 +280,9 @@ namespace VaxCentre.Server.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
+                    b.Property<int>("PrivilegeLevel")
                         .ValueGeneratedOnUpdateSometimes()
-                        .HasColumnType("longtext");
+                        .HasColumnType("int");
 
                     b.HasDiscriminator().HasValue("Admin");
                 });
@@ -304,10 +306,9 @@ namespace VaxCentre.Server.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
+                    b.Property<int>("PrivilegeLevel")
                         .ValueGeneratedOnUpdateSometimes()
-                        .HasColumnType("longtext");
+                        .HasColumnType("int");
 
                     b.Property<string>("SSID")
                         .IsRequired()
@@ -324,10 +325,9 @@ namespace VaxCentre.Server.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
+                    b.Property<int>("PrivilegeLevel")
                         .ValueGeneratedOnUpdateSometimes()
-                        .HasColumnType("longtext");
+                        .HasColumnType("int");
 
                     b.Property<string>("displayName")
                         .IsRequired()
@@ -403,7 +403,7 @@ namespace VaxCentre.Server.Migrations
 
                     b.HasOne("VaxCentre.Server.Models.Vaccine", null)
                         .WithMany()
-                        .HasForeignKey("VaccinesId")
+                        .HasForeignKey("VaccinesID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

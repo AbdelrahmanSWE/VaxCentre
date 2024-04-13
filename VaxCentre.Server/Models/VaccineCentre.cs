@@ -1,11 +1,9 @@
 ﻿namespace VaxCentre.Server.Models
 {
-    public class VaccineCentre
+    public class VaccineCentre : Account
     {
-        public int ID { get; set; }
         public required string displayName { get; set; }
-        public required string username { get; set; }
-        public required string password { get; set; }
-        public required string address { get; set; }
+        public required string Address { get; set; }
+        public List<Vaccine>? Vaccines { get; set; }
     }
 }

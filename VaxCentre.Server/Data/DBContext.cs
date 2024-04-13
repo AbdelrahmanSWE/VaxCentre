@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using VaxCentre.Server.Models;
 
 namespace VaxCentre.Server.Data
 {
-    public class DBContext : DbContext
+    public class DBContext : IdentityDbContext
     {
         public DBContext(DbContextOptions<DBContext> options):base(options)
         {

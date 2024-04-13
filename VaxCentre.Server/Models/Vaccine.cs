@@ -2,10 +2,11 @@
 {
     public class Vaccine
     {
-        public int ID { get; set; }
-        public required string name { get; set; }
-        public required string description { get; set; }
-        public string? precaution { get; set; }
-        public int? gapTime { get; set; }
+        public int Id { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public string? Precaution { get; set; }
+        public int? GapTime { get; set; }
+        public List<VaccineCentre>? AvailableIn { get; set; }
     }
 }
