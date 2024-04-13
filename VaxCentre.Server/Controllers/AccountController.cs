@@ -107,7 +107,10 @@ namespace VaxCentre.Server.Controllers
 
             var roles = await _userManager.GetRolesAsync(user);
 
-            return Ok("Login Success");
+            if (roles.Contains("Admin")) return Ok("Admin redirect Mr. " + user.UserName);
+            if (roles.Contains("VaccineCentre")) return Ok("Centre redirect Mr. " + user.UserName);
+            if (roles.Contains("Patient")) return Ok("Patient redirect Mr. " + user.UserName);
+            return BadRequest();
         }
     }
 }
