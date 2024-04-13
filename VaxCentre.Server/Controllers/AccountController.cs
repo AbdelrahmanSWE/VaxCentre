@@ -57,7 +57,38 @@ namespace VaxCentre.Server.Controllers
         }
 
 
-        
+        [HttpPost("VaccineCentreRegister")]
+        public async Task<IActionResult> RegisterVaccineCentre(CentreRegisterDto RegisterDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+                var Centre = new VaccineCentre
+                {
+                    UserName = RegisterDto.UserName,
+                    Email = RegisterDto.Email,
+                    PhoneNumber = RegisterDto.PhoneNumber,
+                    Address = RegisterDto.Address,
+                    DisplayName = RegisterDto.DisplayName,
+                };
+                var createdUser = await _userManager.CreateAsync(Centre, RegisterDto.Password);
+                if (createdUser.Succeeded)
+                {
+                    var roleResult = await _userManager.AddToRoleAsync(Centre, "VaccineCentre");
+                    if (roleResult.Succeeded)
+                    {
+                        return Ok("The vaccine Centre was added to the database with the name: " + Centre.DisplayName);
+                    }
+                    return StatusCode(500, roleResult.Errors);
+                }
+                return StatusCode(500, createdUser.Errors);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message, stackTrace = ex.StackTrace });
+            }
+        }
 
 
         [HttpPost("Login")]
