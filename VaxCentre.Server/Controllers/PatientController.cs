@@ -9,7 +9,7 @@ using VaxCentre.Server.Models;
 
 namespace VaxCentre.Server.Controllers
 {
-    [Route("api/patient/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class PatientController : ControllerBase
     {
