@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VaxCentre.Server.Dtos.Account;
-using VaxCentre.Server.Models;
+using VaxCentre.Server.Models;      
 
 namespace VaxCentre.Server.Controllers
 {
