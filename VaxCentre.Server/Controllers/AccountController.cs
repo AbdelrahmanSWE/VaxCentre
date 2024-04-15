@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VaxCentre.Server.Dtos.Account;
-using VaxCentre.Server.Models;
+using VaxCentre.Server.Models;      
 
 namespace VaxCentre.Server.Controllers
 {
@@ -44,7 +44,7 @@ namespace VaxCentre.Server.Controllers
                     var roleResult = await _userManager.AddToRoleAsync(Patient, "Patient");
                     if (roleResult.Succeeded)
                     {
-                        return Ok("Successful register Mr./Mrs. "+ Patient.FirstName);
+                        return Ok(Patient);
                     }
                     return StatusCode(500, roleResult.Errors);
                 }
@@ -107,9 +107,9 @@ namespace VaxCentre.Server.Controllers
 
             var roles = await _userManager.GetRolesAsync(user);
 
-            if (roles.Contains("Admin")) return Ok("Admin redirect Mr. " + user.UserName);
-            if (roles.Contains("VaccineCentre")) return Ok("Centre redirect Mr. " + user.UserName);
-            if (roles.Contains("Patient")) return Ok("Patient redirect Mr. " + user.UserName);
+            if (roles.Contains("Admin")) return Ok(user);
+            if (roles.Contains("VaccineCentre")) return Ok(user);
+            if (roles.Contains("Patient")) return Ok(user);
             return BadRequest();
         }
     }

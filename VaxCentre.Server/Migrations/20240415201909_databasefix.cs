@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace VaxCentre.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class databasefix : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -44,7 +46,6 @@ namespace VaxCentre.Server.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     EmpName = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PrivilegeLevel = table.Column<int>(type: "int", nullable: true),
                     SSID = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     FirstName = table.Column<string>(type: "longtext", nullable: true)
@@ -54,7 +55,7 @@ namespace VaxCentre.Server.Migrations
                     Address = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     AcceptState = table.Column<int>(type: "int", nullable: true),
-                    displayName = table.Column<string>(type: "longtext", nullable: true)
+                    DisplayName = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     VaccineCentre_Address = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -88,22 +89,22 @@ namespace VaxCentre.Server.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "vaccines",
+                name: "Vaccines",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    name = table.Column<string>(type: "longtext", nullable: false)
+                    Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    description = table.Column<string>(type: "longtext", nullable: false)
+                    Description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    precaution = table.Column<string>(type: "longtext", nullable: true)
+                    Precaution = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    gapTime = table.Column<int>(type: "int", nullable: true)
+                    GapTime = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_vaccines", x => x.ID);
+                    table.PrimaryKey("PK_Vaccines", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -235,16 +236,56 @@ namespace VaxCentre.Server.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "VaccinationReciepts",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PatientId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    VaccineId = table.Column<int>(type: "int", nullable: false),
+                    VaccineCentreId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    VaccineDose1Date = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Dose1State = table.Column<int>(type: "int", nullable: false),
+                    VaccineDose2Date = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Dose2State = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VaccinationReciepts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_VaccinationReciepts_AspNetUsers_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_VaccinationReciepts_AspNetUsers_VaccineCentreId",
+                        column: x => x.VaccineCentreId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_VaccinationReciepts_Vaccines_VaccineId",
+                        column: x => x.VaccineId,
+                        principalTable: "Vaccines",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "VaccineVaccineCentre",
                 columns: table => new
                 {
                     AvailableInId = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    VaccinesID = table.Column<int>(type: "int", nullable: false)
+                    VaccinesId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_VaccineVaccineCentre", x => new { x.AvailableInId, x.VaccinesID });
+                    table.PrimaryKey("PK_VaccineVaccineCentre", x => new { x.AvailableInId, x.VaccinesId });
                     table.ForeignKey(
                         name: "FK_VaccineVaccineCentre_AspNetUsers_AvailableInId",
                         column: x => x.AvailableInId,
@@ -252,13 +293,23 @@ namespace VaxCentre.Server.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_VaccineVaccineCentre_vaccines_VaccinesID",
-                        column: x => x.VaccinesID,
-                        principalTable: "vaccines",
-                        principalColumn: "ID",
+                        name: "FK_VaccineVaccineCentre_Vaccines_VaccinesId",
+                        column: x => x.VaccinesId,
+                        principalTable: "Vaccines",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "1335422b-60ba-43d6-a11e-258dfcba7c9b", null, "Admin", "ADMIN" },
+                    { "25f4eae3-abc5-4520-83c0-f1879344bb94", null, "Patient", "PATIENT" },
+                    { "ddcb25d3-2a1a-47fc-a744-22a11e6e6b57", null, "VaccineCenter", "VACCINECENTER" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -298,9 +349,24 @@ namespace VaxCentre.Server.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_VaccineVaccineCentre_VaccinesID",
+                name: "IX_VaccinationReciepts_PatientId",
+                table: "VaccinationReciepts",
+                column: "PatientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VaccinationReciepts_VaccineCentreId",
+                table: "VaccinationReciepts",
+                column: "VaccineCentreId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VaccinationReciepts_VaccineId",
+                table: "VaccinationReciepts",
+                column: "VaccineId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VaccineVaccineCentre_VaccinesId",
                 table: "VaccineVaccineCentre",
-                column: "VaccinesID");
+                column: "VaccinesId");
         }
 
         /// <inheritdoc />
@@ -322,6 +388,9 @@ namespace VaxCentre.Server.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "VaccinationReciepts");
+
+            migrationBuilder.DropTable(
                 name: "VaccineVaccineCentre");
 
             migrationBuilder.DropTable(
@@ -331,7 +400,7 @@ namespace VaxCentre.Server.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "vaccines");
+                name: "Vaccines");
         }
     }
 }
