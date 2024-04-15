@@ -44,7 +44,7 @@ namespace VaxCentre.Server.Controllers
                     var roleResult = await _userManager.AddToRoleAsync(Patient, "Patient");
                     if (roleResult.Succeeded)
                     {
-                        return Ok("Successful register Mr./Mrs. "+ Patient.FirstName);
+                        return Ok(Patient);
                     }
                     return StatusCode(500, roleResult.Errors);
                 }
