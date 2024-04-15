@@ -4,8 +4,7 @@
 
 
 export const authService = async (data) => {
-    const response = await fetch('https://localhost:32768/api/Account/Register', {
-        mode: 'no-cors',
+    const response = await fetch('http://localhost:5247/api/Account/Register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
