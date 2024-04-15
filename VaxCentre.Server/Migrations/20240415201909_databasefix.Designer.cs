@@ -12,8 +12,8 @@ using VaxCentre.Server.Data;
 namespace VaxCentre.Server.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20240413150920_reciepts3")]
-    partial class reciepts3
+    [Migration("20240415201909_databasefix")]
+    partial class databasefix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,6 +49,26 @@ namespace VaxCentre.Server.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1335422b-60ba-43d6-a11e-258dfcba7c9b",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "25f4eae3-abc5-4520-83c0-f1879344bb94",
+                            Name = "Patient",
+                            NormalizedName = "PATIENT"
+                        },
+                        new
+                        {
+                            Id = "ddcb25d3-2a1a-47fc-a744-22a11e6e6b57",
+                            Name = "VaccineCenter",
+                            NormalizedName = "VACCINECENTER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -315,10 +335,6 @@ namespace VaxCentre.Server.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.HasDiscriminator().HasValue("Account");
                 });
 
@@ -367,7 +383,7 @@ namespace VaxCentre.Server.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("displayName")
+                    b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasColumnType("longtext");
 

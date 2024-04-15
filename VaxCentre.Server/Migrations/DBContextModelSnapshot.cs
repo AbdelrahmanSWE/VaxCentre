@@ -50,19 +50,19 @@ namespace VaxCentre.Server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "9aa621ac-55e9-4fd6-b84d-284fbb363e12",
+                            Id = "1335422b-60ba-43d6-a11e-258dfcba7c9b",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "d5f31437-3ba5-4bf3-b6bf-3b99618a47d5",
+                            Id = "25f4eae3-abc5-4520-83c0-f1879344bb94",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         },
                         new
                         {
-                            Id = "e614ef58-51a4-4e25-a3e3-e8bdc48ac2ec",
+                            Id = "ddcb25d3-2a1a-47fc-a744-22a11e6e6b57",
                             Name = "VaccineCenter",
                             NormalizedName = "VACCINECENTER"
                         });
@@ -332,10 +332,6 @@ namespace VaxCentre.Server.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.HasDiscriminator().HasValue("Account");
                 });
 
@@ -384,7 +380,7 @@ namespace VaxCentre.Server.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("displayName")
+                    b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasColumnType("longtext");
 
