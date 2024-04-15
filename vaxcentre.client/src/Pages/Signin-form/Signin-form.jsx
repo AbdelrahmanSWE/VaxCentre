@@ -1,16 +1,30 @@
-
+import { authServiceLogin } from '../../Services/AuthService.jsx';
 function SigninForm() {
+    const login = async (e) => {
+        e.preventDefault();
+
+        const data = {
+            UserName: e.target.UserName.value,
+            Password: e.target.Password.value
+        }
+        try {
+            const response = await authServiceLogin(data);
+            console.log(response);
+        } catch (error) {
+            console.error(error);
+        }
+    }
     return (
         <>
         <div className='signin-form'>
             <div className='signin-form__header'>
             <h1>Sign in</h1>
             </div>
-            <div className='signin-form__body'>
-            <form>
+                <div className='signin-form__body'>
+            <form onSubmit={login}>
                 <div className='form-group'>
-                <label htmlFor='Email'>Email</label>
-                <input type='Email' id='Email' name='Email' />
+                <label htmlFor='UserName'>UserName</label>
+                <input type='text' id='UserName' name='UserName' />
                 </div>
                 <div className='form-group'>
                 <label htmlFor='Password'>Password</label>

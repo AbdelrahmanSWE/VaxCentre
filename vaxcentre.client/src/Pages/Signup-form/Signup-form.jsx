@@ -1,4 +1,4 @@
-import {authService} from '/src/Services/AuthService.jsx';
+import {authServiceRegister} from '/src/Services/AuthService.jsx';
 
 
 function SignupForm() {
@@ -17,7 +17,7 @@ function SignupForm() {
         }
         console.log(data);
         try{
-            const result = await authService(data);
+            const result = await authServiceRegister(data);
             console.log('Signup successful', result);
         } catch (error) {
             console.error('Signup failed', error);
