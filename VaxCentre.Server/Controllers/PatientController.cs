@@ -16,6 +16,7 @@ namespace VaxCentre.Server.Controllers
 
         public PatientController()
         {
+            
         }
 
        

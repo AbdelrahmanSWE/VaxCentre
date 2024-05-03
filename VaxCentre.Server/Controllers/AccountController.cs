@@ -38,6 +38,7 @@ namespace VaxCentre.Server.Controllers
                     Address = PatientRegisterDto.Address,
                     AcceptState = 0,
                 };
+
                 var createdUser = await _userManager.CreateAsync(Patient, PatientRegisterDto.Password);
                 if (createdUser.Succeeded)
                 {

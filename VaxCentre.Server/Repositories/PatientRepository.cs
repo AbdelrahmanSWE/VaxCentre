@@ -19,7 +19,7 @@ namespace VaxCentre.Server.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<bool> DeleteAsync(int id)
+        public Task<bool> DeleteAsync(string Id)
         {
             throw new NotImplementedException();
         }
@@ -42,27 +42,53 @@ namespace VaxCentre.Server.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Patient?> GetByIdAsync(int id)
+        public async Task<List<Patient>> GetByNameAsync(string name)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var Result = await _context.Patients
+                    .Where(x => (x.FirstName+" "+x.LastName).Contains(name))
+                    .ToListAsync();
+
+                return Result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while retrieving vaccines with name containing {name}.", ex);
+            }
         }
 
-        public Task<List<Patient>> GetByNameAsync(string name)
+        public async Task<List<Patient>> GetByState(int state)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var Result = await _context.Patients
+                    .Where(x => x.AcceptState == state)
+                    .ToListAsync();
+
+                return Result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while retrieving vaccines with name containing {name}.", ex);
+            }
         }
 
-        public Task<List<Patient>> GetByState(int state)
+        public async Task<bool> IsExist(string Id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var Result = await _context.Patients.FirstOrDefaultAsync(x => x.Id == Id);
+                if (Result != null) return true;
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while checking the existence of the vaccine with Id {Id}.", ex);
+            }
         }
 
-        public Task<bool> IsExist(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Patient?> UpdateAsync(Patient entity, int id)
+        public Task<Patient?> UpdateAsync(Patient entity, string id)
         {
             throw new NotImplementedException();
         }
