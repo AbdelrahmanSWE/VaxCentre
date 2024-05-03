@@ -5,7 +5,7 @@ using VaxCentre.Server.Models;
 
 namespace VaxCentre.Server.Dtos.Vaccine
 {
-    public class InputDto
+    public class CreateVaccineDto
     {
         [Required, NotNull]
         public string? Name { get; set; }
