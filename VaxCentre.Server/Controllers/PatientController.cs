@@ -13,10 +13,9 @@ namespace VaxCentre.Server.Controllers
     [ApiController]
     public class PatientController : ControllerBase
     {
-        private readonly DBContext _DBContext;
-        public PatientController(DBContext dBContext)
+
+        public PatientController()
         {
-            _DBContext = dBContext;
         }
 
        
