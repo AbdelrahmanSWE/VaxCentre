@@ -3,7 +3,7 @@ using VaxCentre.Server.Dtos.Vaccine;
 
 namespace VaxCentre.Server.Interfaces
 {
-    public interface IVaccineRepository : IGenericRepository<Vaccine>
+    public interface IVaccineRepository : IGenericRepository<Vaccine, int>
     {
         Task<List<Vaccine>> GetByNameAsync(string name);
         Task<List<Vaccine>> GetByCentre(string centreId);

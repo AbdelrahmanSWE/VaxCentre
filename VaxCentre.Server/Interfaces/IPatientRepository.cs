@@ -2,9 +2,8 @@
 
 namespace VaxCentre.Server.Interfaces
 {
-    public interface IPatientRepository : IGenericRepository<Patient>
+    public interface IPatientRepository : IGenericRepository<Patient, string>
     {
-        Task<Patient?> GetByIdAsync(string Id);
         Task<List<Patient>> GetByNameAsync(string name);
         Task<List<Patient>> GetByState(int state);
     }

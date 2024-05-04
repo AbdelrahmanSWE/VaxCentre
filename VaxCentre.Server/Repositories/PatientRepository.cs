@@ -33,7 +33,7 @@ namespace VaxCentre.Server.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while retrieving all vaccines.", ex);
+                throw new Exception("An error occurred while retrieving all patients.", ex);
             }
         }
 
@@ -54,7 +54,7 @@ namespace VaxCentre.Server.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred while retrieving vaccines with name containing {name}.", ex);
+                throw new Exception($"An error occurred while retrieving patients with name containing {name}.", ex);
             }
         }
 
@@ -70,7 +70,7 @@ namespace VaxCentre.Server.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred while retrieving vaccines with name containing {name}.", ex);
+                throw new Exception($"An error occurred while retrieving patients with state: {state}.", ex);
             }
         }
 
@@ -84,7 +84,7 @@ namespace VaxCentre.Server.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred while checking the existence of the vaccine with Id {Id}.", ex);
+                throw new Exception($"An error occurred while checking the existence of the patient with Id {Id}.", ex);
             }
         }
 
