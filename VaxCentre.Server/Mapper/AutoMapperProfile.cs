@@ -15,6 +15,9 @@ namespace VaxCentre.Server.Mapper
 
             //Patient
             CreateMap<PatientRegisterDto, Patient>();
+
+            //VaccineCentre
+            CreateMap<CentreRegisterDto, VaccineCentre>();
         }
 
     }
