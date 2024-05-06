@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using VaxCentre.Server.Data.Interfaces;
 using VaxCentre.Server.Dtos.Vaccine;
-using VaxCentre.Server.Interfaces;
 using VaxCentre.Server.Models;
 
 namespace VaxCentre.Server.Controllers
@@ -20,7 +20,7 @@ namespace VaxCentre.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllVaccines()
+        public async Task<IActionResult> DisplayVaccines()
         {
             try
             {
@@ -35,7 +35,7 @@ namespace VaxCentre.Server.Controllers
 
 
         [HttpGet("{Id}")]
-        public async Task<IActionResult> GetById([FromRoute] int Id) {
+        public async Task<IActionResult> GetVaccine([FromRoute] int Id) {
             try 
             {
                 if (Id <= 0)
@@ -52,7 +52,7 @@ namespace VaxCentre.Server.Controllers
         }
 
         [HttpGet("search/{query}")]
-        public async Task<IActionResult> GetByName([FromRoute] string query)
+        public async Task<IActionResult> SearchVaccine([FromRoute] string query)
         {
             try
             {
@@ -118,7 +118,7 @@ namespace VaxCentre.Server.Controllers
 
 
         [HttpDelete("Delete/{Id}")]
-        public async Task<IActionResult> DeleteVaccine([FromRoute] int Id)
+        public async Task<IActionResult> RemoveVaccine([FromRoute] int Id)
         {
             try
             {
