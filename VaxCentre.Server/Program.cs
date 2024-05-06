@@ -5,6 +5,7 @@ using VaxCentre.Server.Data.Interfaces;
 using VaxCentre.Server.Data.Repositories;
 using VaxCentre.Server.Mapper;
 using VaxCentre.Server.Models;
+using VaxCentre.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +18,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
 builder.Services.AddScoped<IVaccineRepository, VaccineRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IVaccineCentreRepository, VaccineCentreRepository>();
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
+builder.Services.AddScoped<AuthService>();
 
 var defaultConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<DBContext>(options =>
