@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using VaxCentre.Server.Data;
-using VaxCentre.Server.Dtos.Account;
+using VaxCentre.Server.Data.Interfaces;
 using VaxCentre.Server.Dtos.Vaccine;
 using VaxCentre.Server.Models;
 
@@ -12,91 +11,135 @@ namespace VaxCentre.Server.Controllers
     [ApiController]
     public class VaccineController : ControllerBase
     {
-        private readonly DBContext _DBContext;
-        public VaccineController(DBContext dBContext)
+        private readonly IMapper _mapper;
+        private readonly IVaccineRepository _repository;
+        public VaccineController(IMapper mapper, IVaccineRepository repository)
         {
-            _DBContext = dBContext;
+            _mapper = mapper;
+            _repository = repository;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> DisplayVaccines()
         {
-            var Result = await _DBContext.Vaccines.ToListAsync();
-            if (Result != null)
-                return Ok(Result);
-            return Ok("No vaccines available");
+            try
+            {
+                var result = await _repository.GetAllAsync();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while retrieving the data in the controller method. \n{ex.Message}");
+            }
         }
 
 
         [HttpGet("{Id}")]
-        public IActionResult GetById([FromRoute] int Id) {
-            var Result = _DBContext.Vaccines.FirstOrDefault(x => x.Id == Id);
-            if (Result != null)
-                return Ok(Result);
-            return NotFound();
+        public async Task<IActionResult> GetVaccine([FromRoute] int Id) {
+            try 
+            {
+                if (Id <= 0)
+                {
+                    return BadRequest("Invalid Id");
+                }
+                var result = await _repository.GetByIdAsync(Id);
+                return Ok(result);
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(500, $"An error occurred while retrieving the data in the controller method. \n{ex.Message}");
+            }
+        }
+
+        [HttpGet("search/{query}")]
+        public async Task<IActionResult> SearchVaccine([FromRoute] string query)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(query))
+                {
+                    var result = await _repository.GetByNameAsync(query);
+                    return Ok(result);
+                }
+                return BadRequest("Please provide a valid query.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while retrieving the data in the controller method. \n{ex.Message}");
+            }
         }
 
 
         [HttpPost("Create")]
-        public async Task<IActionResult> Create(InputDto InputDto)
+        public async Task<IActionResult> CreateVaccine(CreateVaccineDto input)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            var Vaccine = new Vaccine
+            try
             {
-                Name = InputDto.Name,
-                Description = InputDto.Description,
-                Precaution = InputDto.Precaution,
-                GapTime = InputDto.GapTime,
-            };
-            await _DBContext.Vaccines.AddAsync(Vaccine);
-            var saveResult = await _DBContext.SaveChangesAsync();
-
-            if (saveResult > 0) return Ok(Vaccine);
-            return BadRequest("Failed to add vaccine to DataBase");
+                if (ModelState.IsValid)
+                {
+                    Vaccine vaccine = _mapper.Map<Vaccine>(input);
+                    var result = await _repository.CreateAsync(vaccine);
+                    if (result != null) return Ok(result);
+                }
+                return BadRequest("Failed to save vaccine");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while retrieving the data in the controller method. \n{ex.Message}");
+            }
         }
 
 
         [HttpPost("Update/{Id}")]
-        public async Task<IActionResult> Update(InputDto InputDto, [FromRoute] int Id) {
+        public async Task<IActionResult> UpdateVaccine(UpdateVaccineDto input, [FromRoute] int Id)
+        {
+            try
+            {
+                if (Id <= 0)
+                {
+                    return BadRequest("Invalid Id");
+                }
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                Vaccine vaccine = _mapper.Map<Vaccine>(input);
+                var result = await _repository.UpdateAsync(vaccine, Id);
 
-            var Updated = _DBContext.Vaccines.FirstOrDefault(x => x.Id == Id);
-
-            if (Updated == null)
-                return NotFound();
-
-            Updated.Name = InputDto.Name;
-
-            Updated.Description = InputDto.Description;
-
-            if (InputDto.Precaution != null)
-                Updated.Precaution = InputDto.Precaution;
-
-            if (InputDto.GapTime != null)
-                Updated.GapTime = InputDto.GapTime;
-
-            _DBContext.Vaccines.Update(Updated);
-            await _DBContext.SaveChangesAsync();
-
-            return Ok(Updated);
+                if (result != null)
+                    return Ok(result);
+                else
+                    return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while retrieving the data in the controller method. \n{ex.Message}");
+            }
         }
 
 
         [HttpDelete("Delete/{Id}")]
-        public async Task<IActionResult> Delete([FromRoute]int Id)
+        public async Task<IActionResult> RemoveVaccine([FromRoute] int Id)
         {
-            var Deleted = _DBContext.Vaccines.FirstOrDefault(x => x.Id == Id);
+            try
+            {
+                if (Id <= 0)
+                {
+                    return BadRequest("Invalid Id");
+                }
 
-            if (Deleted == null) return NotFound();
+                var result = await _repository.DeleteAsync(Id);
 
-            _DBContext.Vaccines.Remove(Deleted);
+                if (!result)
+                {
+                    return NotFound($"Vaccine with Id {Id} not found");
+                }
 
-            await _DBContext.SaveChangesAsync();
-
-            return Ok(Deleted);
+                return Ok("Vaccine deleted successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while retrieving the data in the controller method. \n{ex.Message}");
+            }
         }
 
     }

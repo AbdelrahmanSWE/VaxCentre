@@ -2,6 +2,6 @@
 {
     public class Admin : Account
     {
-        public String EmpName { get; set; }
+        public string? EmpName { get; set; }
     }
 }
