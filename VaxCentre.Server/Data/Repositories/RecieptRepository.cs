@@ -7,13 +7,35 @@ namespace VaxCentre.Server.Data.Repositories
     public class RecieptRepository : GenericRepository<VaccinationReciept>,IRecieptRepository
     {
         DBContext _context;
-        private object x;
 
         public RecieptRepository(DBContext context) : base(context)
         {
             _context = context;
         }
+        public async Task<bool> ReserveDose2 (int Id, DateTime date)
+        {
+            var result = await _context.VaccinationReciepts.Include(r=>r.Vaccine).FirstOrDefaultAsync(x=> x.Id==Id);
+            if (result == null) return false;
+            TimeSpan timeSpan = date - result.VaccineDose1Date;
+            double days = Math.Abs(timeSpan.TotalDays);
+            if (result.Vaccine != null && result.Vaccine.GapTime <= days)
+            {
+                result.VaccineDose2Date = date;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
 
+        public async Task<bool> CheckVaccinePatientExist(int VaccineId, int PatientId)
+        {
+            var result = await _context.VaccinationReciepts
+                                   .Include(r => r.Vaccine).Include(r => r.Patient)
+                                   .FirstOrDefaultAsync(x => x.Vaccine != null && x.Patient !=null && x.Vaccine.Id == VaccineId && x.Patient.Id == PatientId);
+                                   
+            if (result == null) { return false; }
+            return true;
+        }
         public async Task<bool> ApproveDose1(int Id)
         {
             var reciept = await _context.VaccinationReciepts.FindAsync(Id);
@@ -35,12 +57,12 @@ namespace VaxCentre.Server.Data.Repositories
 
         public async Task<bool> ApproveDose2(int Id)
         {
-            var reciept = await _context.VaccinationReciepts.Include(r => r.Vaccine).FirstOrDefaultAsync(x => x.Id == Id); ;
+            var reciept = await _context.VaccinationReciepts.Include(r => r.Vaccine).FirstOrDefaultAsync(x => x.Id == Id); 
             if (reciept == null )
             {
                 return false;
             }
-            TimeSpan timeSpan = reciept.VaccineDose1Date - reciept.VaccineDose2Date;
+            TimeSpan timeSpan = reciept.VaccineDose2Date - reciept.VaccineDose1Date;
             double days = Math.Abs(timeSpan.TotalDays);
             if (reciept.Dose1State == 1 && reciept.Vaccine.GapTime <= days) reciept.Dose2State = 1;
             else return false;
@@ -56,7 +78,7 @@ namespace VaxCentre.Server.Data.Repositories
 
         }
 
-        public async Task<List<VaccinationReciept>> GetByCentre(int CentreId)
+        public async Task<List<Patient>> GetByCentre(int CentreId)
         {
             if (CentreId <= 0)
             {
@@ -65,12 +87,16 @@ namespace VaxCentre.Server.Data.Repositories
 
             try
             {
-                var result = await _context.VaccinationReciepts
-                                   .Include(r => r.VaccineCentre)
-                                   .Where(x => x.VaccineCentre != null && x.VaccineCentre.Id == CentreId)
-                                   .ToListAsync();
+                var query = await _context.VaccinationReciepts
+                    .Include(r => r.VaccineCentre)
+                    .Include(r => r.Patient)
+                    .Where(x => x.VaccineCentre != null && x.VaccineCentre.Id == CentreId)
+                    .ToListAsync();
 
-                if (!result.Any())
+                var result = query.Select(r => r.Patient).ToList();
+
+
+                if (!result.Any() && result!=null)
                 {
                     return [];
                 }

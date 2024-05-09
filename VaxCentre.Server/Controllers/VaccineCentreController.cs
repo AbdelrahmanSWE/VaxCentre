@@ -18,10 +18,12 @@ namespace VaxCentre.Server.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IVaccineCentreRepository _repository;
-        public VaccineCentreController(IMapper mapper, IVaccineCentreRepository repository)
+        private readonly IRecieptRepository _recieptRepository;
+        public VaccineCentreController(IRecieptRepository recieptRepository,IMapper mapper, IVaccineCentreRepository repository)
         {
             _mapper = mapper;
             _repository = repository;
+            _recieptRepository = recieptRepository;
         }
 
         [HttpGet]
@@ -122,6 +124,50 @@ namespace VaxCentre.Server.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred while retrieving the data in the controller method. \n{ex.Message}");
+            }
+        }
+
+        [HttpGet("Registered/{VaccineCentreId}")]
+        public async Task<IActionResult> GetRegisteredPatients([FromRoute]int VaccineCentreId)
+        {
+            var result = await _recieptRepository.GetByCentre(VaccineCentreId);
+            return Ok(result);
+        }
+        [HttpGet("ApproveDos1/{RecieptId}")]
+        public async Task<IActionResult> ApproveDose1([FromRoute]int RecieptId)
+        {
+            if( await _recieptRepository.ApproveDose1(RecieptId))return Ok(RecieptId);
+            return BadRequest();
+        }
+
+        [HttpGet("ApproveDos2/{RecieptId}")]
+        public async Task<IActionResult> ApproveDose2([FromRoute] int RecieptId)
+        {
+            if (await _recieptRepository.ApproveDose2(RecieptId)) return Ok(RecieptId);
+            return BadRequest();
+        }
+        [HttpPost("Upload/{RecieptId}")]
+        public async Task<string> UploadFile(IFormFile _IFormFile, [FromRoute]int RecieptId)
+        {
+            var result = await _recieptRepository.GetByIdAsync(RecieptId);
+            if (result.Dose2State != 1) return "not available";
+            string FileName = "";
+            try
+            {
+                FileInfo _FileInfo = new FileInfo(_IFormFile.FileName);
+                FileName = RecieptId + _FileInfo.Extension;
+                var _GetFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Upload\\Files");
+                if (!Directory.Exists(_GetFilePath)) Directory.CreateDirectory(_GetFilePath);
+                var FileDirectory = Path.Combine(Directory.GetCurrentDirectory(),_GetFilePath, FileName);
+                using (var _FileStream = new FileStream(FileDirectory, FileMode.Create))
+                {
+                    await _IFormFile.CopyToAsync(_FileStream);
+                }
+                return FileName;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 
