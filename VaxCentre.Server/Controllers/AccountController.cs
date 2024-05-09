@@ -93,6 +93,11 @@ namespace VaxCentre.Server.Controllers
                 return Unauthorized("Wrong username or password");
             }
             string token = _authService.GenerateJwtToken(account);
+            if (account.Role=="Patient")
+            {
+                var patient = await PatientRepository.GetByIdAsync(account.Id);
+                if (patient!=null&&patient.AcceptState == 0) return Unauthorized("User not accepted by admin");
+            }
             return account.Role switch
             {
                 "Admin" => Ok(token),
@@ -100,6 +105,30 @@ namespace VaxCentre.Server.Controllers
                 "Patient" => Ok(token),
                 _ => Unauthorized("Unauth"),
             };
+        }
+
+        [HttpGet("Activate/{Id}")]
+        public async Task<IActionResult> ActivateAccount([FromRoute] int Id)
+        {
+            if (Id <= 0)
+            {
+                return BadRequest("Invalid Id");
+            }
+
+            try
+            {
+                var patient = await PatientRepository.ChangeAcceptState(Id);
+
+                if (patient == null)
+                {
+                    return NotFound($"Patient with Id {Id} not found");
+                }
+                return Ok(patient);
+            }
+            catch (Exception ex)
+            { 
+                return StatusCode(500, $"An error occurred while activating the account {ex}");
+            }
         }
 
     }

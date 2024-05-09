@@ -6,5 +6,6 @@ namespace VaxCentre.Server.Data.Interfaces
     {
         Task<List<Patient>> GetByNameAsync(string name);
         Task<List<Patient>> GetByState(int state);
+        Task<Patient> ChangeAcceptState(int Id);
     }
 }

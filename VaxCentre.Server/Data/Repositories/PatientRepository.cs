@@ -45,5 +45,16 @@ namespace VaxCentre.Server.Data.Repositories
                 throw new Exception($"An error occurred while retrieving patients with state: {state}.", ex);
             }
         }
+
+        public async Task<Patient> ChangeAcceptState(int Id)
+        {
+            var patient = await GetByIdAsync(Id);
+            if (patient == null) {
+                throw new Exception("No user found");
+            }
+            patient.AcceptState = 1;
+            await _context.SaveChangesAsync();
+            return patient;
+        }
     }
 }
