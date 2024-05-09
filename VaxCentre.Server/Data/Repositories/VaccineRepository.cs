@@ -42,6 +42,27 @@ namespace VaxCentre.Server.Data.Repositories
             }
         }
 
-       
+        public async Task<Vaccine> UpdateAsync(Vaccine updatedVaccine)
+        {
+            // Assuming _context is your DbContext
+            _context.Entry(updatedVaccine).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return updatedVaccine;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!await IsExist(updatedVaccine.Id))
+                {
+                    throw new Exception("Vaccine Centre not found");
+                }
+                else
+                {
+                    throw new Exception("unkown error");
+                }
+            }
+        }
     }
 }

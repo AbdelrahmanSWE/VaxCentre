@@ -9,7 +9,6 @@ namespace VaxCentre.Server.Data.Interfaces
         Task<List<T>> GetAllAsync();
         Task<T?> GetByIdAsync(int Id);
         Task<T?> CreateAsync(T entity);
-        Task<T?> UpdateAsync(T entity, int Id);
         Task<bool> DeleteAsync(int Id);
         Task<bool> IsExist(int Id);
     }
