@@ -30,5 +30,70 @@ namespace VaxCentre.Server.Data.Repositories
             }
         }
 
+        public async Task<VaccineCentre> UpdateAsync(VaccineCentre updatedCentre, int Id)
+        {
+            // Assuming _context is your DbContext
+            var centre = await _context.VaccineCentres.FindAsync(Id);
+            if (centre == null)
+            {
+                throw new Exception("Vaccine Centre not found");
+            }
+
+            // Update the properties of the centre object here
+            if (updatedCentre.DisplayName != null)
+            {
+                centre.DisplayName = updatedCentre.DisplayName;
+            }
+            if (updatedCentre.Address != null)
+            {
+                centre.Address = updatedCentre.Address;
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return centre;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw new Exception("Unknown error");
+            }
+        }
+
+        public async Task<VaccineCentre> AssignVaccineToCentre(int VaccineCentreId, int VaccineId)
+        {
+            var vaccineCentre = await _context.VaccineCentres.FindAsync(VaccineCentreId);
+            if (vaccineCentre == null)
+            {
+                throw new Exception("Vaccine Centre not found");
+            }
+
+            var vaccine = await _context.Vaccines.FindAsync(VaccineId);
+            if (vaccine == null)
+            {
+                throw new Exception("Vaccine not found");
+            }
+
+            var existingVaccine = await _context.VaccineCentres
+                .Where(vc => vc.Id == VaccineCentreId)
+                .SelectMany(vc => vc.Vaccines)
+                .FirstOrDefaultAsync(v => v.Id == VaccineId);
+
+            if (existingVaccine != null)
+            {
+                throw new Exception("This Vaccine is already assigned to the Vaccine Centre");
+            }
+
+            if (vaccineCentre.Vaccines == null)
+            {
+                vaccineCentre.Vaccines = new List<Vaccine>();
+            }
+            vaccineCentre.Vaccines.Add(vaccine);
+
+            await _context.SaveChangesAsync();
+
+            return vaccineCentre;
+        }
+
     }
 }

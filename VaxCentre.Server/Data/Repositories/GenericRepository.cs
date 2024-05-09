@@ -95,41 +95,5 @@ namespace VaxCentre.Server.Data.Repositories
             }
         }
 
-
-        public async Task<T?> UpdateAsync(T updated, int id)
-        {
-            try
-            {
-                var entity = await _entity.FindAsync(id);
-
-                if (entity == null)
-                    return null;
-
-                var properties = typeof(T).GetProperties();
-                foreach (var property in properties)
-                {
-                    var updatedValue = property.GetValue(updated);
-                    if (updatedValue != null &&
-                        !Equals(updatedValue, property.PropertyType == typeof(string) ? null : Activator.CreateInstance(property.PropertyType)))
-                    {
-                        property.SetValue(entity, updatedValue);
-                    }
-                }
-
-                await _context.SaveChangesAsync();
-
-                return entity;
-            }
-            catch (DbUpdateException ex)
-            {
-                throw new Exception($"An error occurred while updating the entity in the database.", ex);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"An unexpected error occurred.", ex);
-            }
-        }
-
-
     }
 }

@@ -51,6 +51,28 @@ namespace VaxCentre.Server.Controllers
             }
         }
 
+        [HttpGet("/SearchByCentre/{Id}")]
+        public async Task<IActionResult> GetVaccinesByCentre([FromRoute] int Id)
+        {
+            try
+            {
+                if (Id <= 0)
+                {
+                    return BadRequest("Invalid Id");
+                }
+                var vaccines = await _repository.GetByCentre(Id);
+
+                var vaccineDtos = _mapper.Map<List<VaccineDisplayDto>>(vaccines);
+
+                return Ok(vaccineDtos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while retrieving the data in the controller method. \n{ex.Message}");
+            }
+        }
+
+
         [HttpGet("search/{query}")]
         public async Task<IActionResult> SearchVaccine([FromRoute] string query)
         {
