@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VaxCentre.Server.Data.Interfaces;
@@ -18,7 +19,11 @@ namespace VaxCentre.Server.Controllers
         IAccountRepository AccountRepository;
         IMapper _mapper;
         AuthService _authService;
-        public AccountController(IAccountRepository accountRepository,AuthService authenticationService,IMapper mapper,IPatientRepository patient, IVaccineCentreRepository vaccineCentre)
+        public AccountController(IAccountRepository accountRepository,
+            AuthService authenticationService,
+            IMapper mapper,
+            IPatientRepository patient,
+            IVaccineCentreRepository vaccineCentre)
         {
             PatientRepository = patient;
             VaccineCentreRepository = vaccineCentre;
@@ -87,12 +92,13 @@ namespace VaxCentre.Server.Controllers
             {
                 return Unauthorized("Wrong username or password");
             }
+            string token = _authService.GenerateJwtToken(account);
             return account.Role switch
             {
-                "Admin" => Ok("Admin"),
-                "VaccineCentre" => Ok("VaccineCentre"),
-                "Patient" => Ok("Patient"),
-                _ => Unauthorized("No role assigned"),
+                "Admin" => Ok(token),
+                "VaccineCentre" => Ok(token),
+                "Patient" => Ok(token),
+                _ => Unauthorized("Unauth"),
             };
         }
 
