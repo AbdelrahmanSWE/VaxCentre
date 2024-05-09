@@ -33,7 +33,9 @@ namespace VaxCentre.Server.Data.Repositories
         {
             try
             {
-                var Result = await _context.VaccineCentres.FirstOrDefaultAsync(x => x.Id == centreId);
+                var Result = await _context.VaccineCentres
+                    .Include(vc => vc.Vaccines)
+                    .FirstOrDefaultAsync(x => x.Id == centreId);
                 return Result?.Vaccines ?? [];
             }
             catch (Exception ex)
@@ -42,27 +44,41 @@ namespace VaxCentre.Server.Data.Repositories
             }
         }
 
-        public async Task<Vaccine> UpdateAsync(Vaccine updatedVaccine)
+        public async Task<Vaccine> UpdateAsync(Vaccine updatedVaccine, int Id)
         {
-            // Assuming _context is your DbContext
-            _context.Entry(updatedVaccine).State = EntityState.Modified;
+            var vaccine = await _context.Vaccines.FindAsync(Id);
+            if (vaccine == null)
+            {
+                throw new Exception("Vaccine not found");
+            }
+
+            if (updatedVaccine.Name != null)
+            {
+                vaccine.Name = updatedVaccine.Name;
+            }
+            if (updatedVaccine.Description != null)
+            {
+                vaccine.Description = updatedVaccine.Description;
+            }
+            if (updatedVaccine.Precaution != null)
+            {
+                vaccine.Precaution = updatedVaccine.Precaution;
+            }
+            if (updatedVaccine.GapTime.HasValue)
+            {
+                vaccine.GapTime = updatedVaccine.GapTime;
+            }
 
             try
             {
                 await _context.SaveChangesAsync();
-                return updatedVaccine;
+                return vaccine;
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await IsExist(updatedVaccine.Id))
-                {
-                    throw new Exception("Vaccine Centre not found");
-                }
-                else
-                {
-                    throw new Exception("unkown error");
-                }
+                throw new Exception("Unknown error");
             }
         }
+
     }
 }

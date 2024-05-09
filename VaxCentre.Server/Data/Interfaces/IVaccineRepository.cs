@@ -7,6 +7,6 @@ namespace VaxCentre.Server.Data.Interfaces
     {
         Task<List<Vaccine>> GetByNameAsync(string name);
         Task<List<Vaccine>> GetByCentre(int centreId);
-        Task<Vaccine> UpdateAsync(Vaccine vaccine);
+        Task<Vaccine> UpdateAsync(Vaccine vaccine, int Id);
     }
 }
