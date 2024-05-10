@@ -1,4 +1,5 @@
 import React from 'react';
+import './App.css';
 
 const PatientsVaccination = () => {
     const patients = [
@@ -18,6 +19,7 @@ const PatientsVaccination = () => {
 
     return (
         <div>
+            <h2 className='card title'>Current Users</h2>
             {patients.map((patient, index) => (
                 <div key={index} className="card">
                     <h2>{`${patient.firstName} ${patient.lastName}`}</h2>

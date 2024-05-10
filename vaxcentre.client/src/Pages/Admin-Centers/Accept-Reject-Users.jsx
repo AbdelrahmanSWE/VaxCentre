@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-
+import Button from 'react-bootstrap/Button';
+import './App.css';
 
 
 function ListUsers() {
@@ -12,27 +13,27 @@ function ListUsers() {
 
     const handleAccept = (id) => {
         // Update the state of the patient with the given id to 1 (accepted)
-        
+
     };
 
 
     const handleDelete = (id) => {
         // Remove the patient with the given id from the list(Database)
-        
+
     };
 
     return (
         <div>
-            <h2>List of Patients</h2>
-            <ul>
+            <h2 className='card title'>Requests</h2>
+            <div>
                 {patients.map((patient) => (
-                    <li key={patient.id}>
+                    <div className='card' key={patient.id}>
                         <h2>{patient.name}</h2>
-                        <button onClick={() => handleAccept(patient.id)}>Accept</button>
-                        <button onClick={() => handleDelete(patient.id)}>Delete</button>
-                    </li>
+                        <Button variant="success" onClick={() => handleAccept(patient.id)}>Accept</Button>
+                        <Button variant="danger" onClick={() => handleDelete(patient.id)}>Delete</Button>
+                    </div>
                 ))}
-            </ul>
+            </div>
         </div>
     );
 

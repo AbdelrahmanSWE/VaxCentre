@@ -1,19 +1,57 @@
-﻿#root {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem;
-    text-align: center;
+﻿/* #root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+align-items: center;
+  text-align: center;
+} */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em;
+    background-color: #f8f9fa;
+    box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
+}
+/* .overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 50%;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.992);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+} */
+/* .logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+} */
+
+.card {
+    padding: 2em;
 }
 
-tr:nth-child(even) {
-    background: #F2F2F2;
+.title {
+    background-color: rgb(142, 103, 103);
+    color: white;
 }
 
-tr:nth-child(odd) {
-    background: #FFF;
-}
-
-th, td {
-    padding-left: 1rem;
-    padding-right: 1rem;
+.addBtn {
+    width: 100%;
 }
