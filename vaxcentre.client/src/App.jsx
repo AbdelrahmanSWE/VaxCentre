@@ -24,7 +24,7 @@ function App() {
                 <Col><PatientsVaccination /></Col>
             </Row>
             
-
+            
         </>
     );
 }

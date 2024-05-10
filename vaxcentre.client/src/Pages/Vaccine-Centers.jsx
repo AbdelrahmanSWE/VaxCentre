@@ -10,28 +10,145 @@ function VaccinationCenter() {
     ]);
 
     const handleAcceptFirstDose = (patientId) => {
-        // Handle accepting the first dose reservation for the patient with the given ID
-        // Update the patient state accordingly
+        // Find the index of the patient with the given ID
+        const index = patients.findIndex(patient => patient.id === patientId);
+    
+        // If the patient is found, update the state to set firstDoseAccepted to true
+        if (index !== -1) {
+            const updatedPatients = [...patients];
+            updatedPatients[index] = { ...updatedPatients[index], firstDoseAccepted: true };
+            setPatients(updatedPatients);
+    
+            // Fetch request to update the server
+            fetch('/api/vaccines', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: patientId,
+                    patients: updatedPatients // Include the updated list of patients
+                }),
+            })
+            .then(response => {
+                // Handle the response accordingly
+            })
+            .catch(error => {
+                // Handle errors
+            });
+        }
     };
-
+    
     const handleRefuseFirstDose = (patientId) => {
-        // Handle refusing the first dose reservation for the patient with the given ID
-        // Update the patient state accordingly
+        // Filter out the patient with the given ID
+        const updatedPatients = patients.filter(patient => patient.id !== patientId);
+    
+        // Update the state with the filtered array
+        setPatients(updatedPatients);
+    
+        // Fetch request to update the server
+        fetch('/api/vaccines', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: patientId,
+                patients: updatedPatients // Include the updated list of patients
+            }),
+        })
+        .then(response => {
+            // Handle the response accordingly
+        })
+        .catch(error => {
+            // Handle errors
+        });
     };
-
+    
     const handleAcceptSecondDose = (patientId) => {
-        // Handle accepting the second dose reservation for the patient with the given ID
-        // Update the patient state accordingly
+        // Find the index of the patient with the given ID
+        const index = patients.findIndex(patient => patient.id === patientId);
+    
+        // If the patient is found, update the state to set secondDoseAccepted to true
+        if (index !== -1) {
+            const updatedPatients = [...patients];
+            updatedPatients[index] = { ...updatedPatients[index], secondDoseAccepted: true };
+            setPatients(updatedPatients);
+    
+            // Fetch request to update the server
+            fetch('/api/vaccines', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: patientId,
+                    patients: updatedPatients // Include the updated list of patients
+                }),
+            })
+            .then(response => {
+                // Handle the response accordingly
+            })
+            .catch(error => {
+                // Handle errors
+            });
+        }
     };
-
+    
     const handleRefuseSecondDose = (patientId) => {
-        // Handle refusing the second dose reservation for the patient with the given ID
-        // Update the patient state accordingly
+        // Filter out the patient with the given ID
+        const updatedPatients = patients.filter(patient => patient.id !== patientId);
+    
+        // Update the state with the filtered array
+        setPatients(updatedPatients);
+    
+        // Fetch request to update the server
+        fetch('/api/vaccines', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: patientId,
+                patients: updatedPatients // Include the updated list of patients
+            }),
+        })
+        .then(response => {
+            // Handle the response accordingly
+        })
+        .catch(error => {
+            // Handle errors
+        });
     };
-
+    
+    
     const handleUploadCertificate = (patientId, file) => {
         // Handle uploading the certificate file for the patient with the given ID
+    
+        // Update the state with the uploaded file information
+        // You might need additional logic here based on how you handle file uploads
+    
+        // Fetch request to update the server
+        fetch('/api/uploadCertificate', {
+            method: 'POST',
+            headers: {
+                // Add any necessary headers for file uploads
+                'Content-Type': 'multipart/form-data',//edit it boys json or form-data fukit 
+            },
+            body: JSON.stringify({
+                id: patientId,
+                file: file, // Assuming file is already processed appropriately for uploading
+                patients: patients // Include the updated list of patients
+            }),
+        })
+        .then(response => {
+        })
+        .catch(error => {
+            // Handle errors -> no isa 
+        });
     };
+    
+    
 
     return (
         <div>
