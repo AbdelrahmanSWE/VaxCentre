@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import '../../App.css';
-import { fetchVaccines, CreateVaccine ,deleteVaccine} from '../../Services/VaccineServices.jsx';
+import { fetchVaccines, CreateVaccine ,deleteVaccine,editVaccine} from '../../Services/VaccineServices.jsx';
 
 function Vaccine() {
     const [vaccines, setVaccines] = useState([]);
@@ -13,9 +13,16 @@ function Vaccine() {
             .catch((error) => console.error('Error fetching vaccines:', error));
     }, []);
 
+    const [selectedVaccine, setSelectedVaccine] = useState(null);
+
     const [showAddModal, setShowAddModal] = useState(false);
     const handleCloseAddModal = () => setShowAddModal(false);
     const handleShowAddModal = () => setShowAddModal(true);
+
+    const [showEditModal, setShowEditModal] = useState(false);
+    const handleCloseEditModal = () => setShowEditModal(false);
+    const handleShowEditModal = () => setShowEditModal(true);
+
 
     const handleSave = async (e) => {
         e.preventDefault();
@@ -43,9 +50,28 @@ function Vaccine() {
 
     }
 
-    const handleEdit = (center) => {
-    //    setSelectedVaccine(center);
-    //    setShowEditModal(true);
+    const handleUpdateVaccine = async () => {
+        try {
+            // Implement the logic to update the vaccine using the editVaccine function
+            const updatedVaccine = await editVaccine(selectedVaccine.id, selectedVaccine);
+            console.log('Vaccine updated successfully:', updatedVaccine);
+    
+            fetchVaccines()
+                .then((data) => setVaccines(data))
+                .catch((error) => console.error('Error fetching vaccines:', error));
+    
+            // Close the modal
+            setShowEditModal(false);
+        } catch (error) {
+            console.error('Error updating vaccine:', error);
+        }
+    };
+    const handleEdit = (vaccine) => {
+        // Set the selectedVaccine state to the vaccine that should be edited
+        setSelectedVaccine(vaccine);
+    
+        // Open the modal
+        setShowEditModal(true);
     };
 
     const handleDelete = async (vaccine) => {
@@ -102,8 +128,40 @@ function Vaccine() {
             </Modal>
 
 
-
-
+            <Modal className='' show={showEditModal} onHide={handleCloseEditModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Edit Vaccination</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {selectedVaccine && (
+                        <>
+                            <h2>Edit Vaccination</h2>
+                            <label>
+                                Name:
+                                <input type="text" value={selectedVaccine.name} onChange={(e) => setSelectedVaccine({ ...selectedVaccine, name: e.target.value })} />
+                            </label>
+                            <label>
+                                Description:
+                                <input type="text" value={selectedVaccine.description} onChange={(e) => setSelectedVaccine({ ...selectedVaccine, description: e.target.value })} />
+                            </label>
+                            <label>
+                                Precaution:
+                                <input type="text" value={selectedVaccine.precaution} onChange={(e) => setSelectedVaccine({ ...selectedVaccine, precaution: e.target.value })} />
+                            </label>
+                            <label>
+                                Gap Time:
+                                <input type="number" value={selectedVaccine.gapTime} onChange={(e) => setSelectedVaccine({ ...selectedVaccine, gapTime: e.target.value })} />
+                            </label>
+                        </>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseEditModal}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={handleUpdateVaccine}>Save Changes</Button>
+                </Modal.Footer>
+            </Modal>
            
 
 
@@ -117,7 +175,7 @@ function Vaccine() {
                         <p>{vaccine.description}</p>
                         <p>Precaution: {vaccine.precaution}</p>
                         <span>Gap Days: {vaccine.gapTime}</span>
-                        <Button className='EditBtn' variant="primary" onClick={() => handleEdit(vaccine.id)}>Edit Center</Button>
+                        <Button onClick={() => handleEdit(vaccine)}>Edit Vaccine</Button>
                         <Button variant="danger" onClick={() => handleDelete(vaccine.id)}>Delete</Button>
                     </div>
                 ))}

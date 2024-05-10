@@ -39,6 +39,29 @@ export async function deleteVaccine(vaccineId) {
     }
 }
 
+export async function editVaccine(vaccineId, updatedData) {
+    try {
+        const authToken = localStorage.getItem('token');
+        const response = await fetch(`https://localhost:32770/api/Vaccine/Update/${vaccineId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ ...updatedData, token: authToken })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to edit vaccine');
+        }
+
+        const data = await response.json();
+        return data; // Assuming the response contains the updated vaccine information
+    } catch (error) {
+        console.error('Error editing vaccine:', error);
+        throw error;
+    }
+}
+
 export async function fetchVaccines() {
 
     try {
