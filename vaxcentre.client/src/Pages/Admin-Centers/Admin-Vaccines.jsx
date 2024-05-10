@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import '../../App.css';
-import { fetchVaccines, CreateVaccine } from '../../Services/VaccineServices.jsx';
+import { fetchVaccines, CreateVaccine ,deleteVaccine} from '../../Services/VaccineServices.jsx';
 
 function Vaccine() {
     const [vaccines, setVaccines] = useState([]);
@@ -44,12 +44,21 @@ function Vaccine() {
     }
 
     const handleEdit = (center) => {
-        setSelectedCenter(center);
-        setShowEditModal(true);
+    //    setSelectedVaccine(center);
+    //    setShowEditModal(true);
     };
 
-    const handleDelete = (centerId) => {
-        // Implement delete
+    const handleDelete = async (vaccine) => {
+        try {
+            await deleteVaccine(vaccine.id);
+            console.log('Vaccine deleted successfully');
+
+            fetchVaccines()
+                .then((data) => setVaccines(data))
+                .catch((error) => console.error('Error fetching vaccines:', error));
+        } catch (error) {
+            console.error('Error deleting vaccine:', error);
+        }
     };
 
     return (
@@ -95,34 +104,7 @@ function Vaccine() {
 
 
 
-            <Modal className='' show={showEditModal} onHide={handleCloseEditModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Edit Center</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {selectedCenter && (
-                        <>
-                            <h2>Edit Center</h2>
-                            <label>
-                                Name:
-                                <input type="text" value={selectedCenter.name} onChange={(e) => setSelectedCenter({ ...selectedCenter, name: e.target.value })} />
-                            </label>
-                            <label>
-                                Vaccines:
-                                <input type="text" value={selectedCenter.vaccines.join(', ')} onChange={(e) => setSelectedCenter({ ...selectedCenter, vaccines: e.target.value.split(', ') })} />
-                            </label>
-                        </>
-                    )}
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseEditModal}>
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={handleUpdateCenter}>
-                        Save Changes
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+           
 
 
 

@@ -17,6 +17,27 @@ export const CreateVaccine = async (data) => {
     return response.json();
 }
 
+export async function deleteVaccine(vaccineId) {
+    try {
+        const authToken = localStorage.getItem('token');
+        const response = await fetch(`https://localhost:32770/api/Vaccine/Delete/${vaccineId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete vaccine');
+        }
+
+        const data = await response.json();
+        return data; // Assuming the response contains the deleted vaccine information
+    } catch (error) {
+        console.error('Error deleting vaccine:', error);
+    }
+}
 
 export async function fetchVaccines() {
 
