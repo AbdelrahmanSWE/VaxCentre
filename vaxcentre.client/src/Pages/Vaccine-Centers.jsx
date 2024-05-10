@@ -8,7 +8,24 @@ function VaccinationCenter() {
         { id: 2, name: 'Patient 2', firstDoseAccepted: false, secondDoseAccepted: false },
         { id: 3, name: 'Patient 3', firstDoseAccepted: false, secondDoseAccepted: false }
     ]);
-
+    /*
+    useEffect(() => {
+        const fetchPatients = async () => {
+            try {
+                // Fetch patient data from API
+                const response = await fetch('/api/VaccineCentre');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch patients');
+                }
+                const data = await response.json();
+                setPatients(data.patients);
+            } catch (error) {
+                setError('Failed to fetch patients');
+            }
+        };
+        fetchPatients();
+    }, []);
+        */
     const handleAcceptFirstDose = (patientId) => {
         // Find the index of the patient with the given ID
         const index = patients.findIndex(patient => patient.id === patientId);
@@ -20,7 +37,7 @@ function VaccinationCenter() {
             setPatients(updatedPatients);
     
             // Fetch request to update the server
-            fetch('/api/vaccines', {
+            fetch(`/api/VaccineCentre/ApproveDos1/${patientId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -47,7 +64,7 @@ function VaccinationCenter() {
         setPatients(updatedPatients);
     
         // Fetch request to update the server
-        fetch('/api/vaccines', {
+        fetch(`/api/VaccineCentre/ApproveDos2/${patientId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -125,20 +142,16 @@ function VaccinationCenter() {
     const handleUploadCertificate = (patientId, file) => {
         // Handle uploading the certificate file for the patient with the given ID
     
-        // Update the state with the uploaded file information
-        // You might need additional logic here based on how you handle file uploads
-    
         // Fetch request to update the server
-        fetch('/api/uploadCertificate', {
+        fetch(`/api/VaccineCentre/Upload/${patientId}`, {
             method: 'POST',
             headers: {
                 // Add any necessary headers for file uploads
                 'Content-Type': 'multipart/form-data',//edit it boys json or form-data fukit 
             },
             body: JSON.stringify({
+                file: file, // File is ready for uploading
                 id: patientId,
-                file: file, // Assuming file is already processed appropriately for uploading
-                patients: patients // Include the updated list of patients
             }),
         })
         .then(response => {
