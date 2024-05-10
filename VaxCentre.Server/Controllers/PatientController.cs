@@ -27,7 +27,7 @@ namespace VaxCentre.Server.Controllers
         private readonly IVaccineCentreRepository _vaccineCentreRepository;
         private readonly IVaccineRepository _vaccineRepository;
         private readonly AuthService _authService;
-        public PatientController(IVaccineRepository vaccineRepository,IVaccineCentreRepository vaccineCentreRepository,AuthService authService,IRecieptRepository recieptRepository,IMapper mapper, IPatientRepository repository)
+        public PatientController(IVaccineRepository vaccineRepository, IVaccineCentreRepository vaccineCentreRepository, AuthService authService, IRecieptRepository recieptRepository, IMapper mapper, IPatientRepository repository)
         {
             _mapper = mapper;
             _recieptRepository = recieptRepository;
@@ -35,6 +35,35 @@ namespace VaxCentre.Server.Controllers
             _authService = authService;
             _vaccineCentreRepository = vaccineCentreRepository;
             _vaccineRepository = vaccineRepository;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DisplayApprovedPatients()
+        {
+            try
+            {
+                var result = await _repository.GetByState(1);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while retrieving the data in the controller method. \n{ex.Message}");
+            }
+        }
+        [HttpGet("Unapproved")]
+        public async Task<IActionResult> DisplayUnapprovedPatients(string token)
+        {
+            //authorize access bye role
+            if (!_authService.AuthorizeRole(token, "Admin")) return Unauthorized("Invalid Role authorization");
+            try
+            {
+                var result = await _repository.GetByState(0);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while retrieving the data in the controller method. \n{ex.Message}");
+            }
         }
 
         [HttpGet("Dose1/{VaccineId}")]
@@ -62,17 +91,24 @@ namespace VaxCentre.Server.Controllers
         }
 
         [HttpGet("Dose2/{RecieptId}")]
-        public async Task<IActionResult> ReserveDose2([FromRoute]int RecieptId, DateTime date) 
+        public async Task<IActionResult> ReserveDose2([FromRoute]int RecieptId, DateTime date,string token) 
         {
+            //authorize access bye role
+            if (!_authService.AuthorizeRole(token, "Patient")) return Unauthorized("Invalid Role authorization");
+            var reciept = await _recieptRepository.GetByIdAsync(RecieptId);
+            if (reciept==null) { return BadRequest("Invalid Reciept Id"); }
+            if (reciept.Dose1State != 1) return BadRequest("dose 1 was not accepted");
             if (await _recieptRepository.ReserveDose2(RecieptId, date)) return Ok("Success");
             return BadRequest();
         }
 
         [HttpGet("Download/{RecieptId}")]
-        public async Task<IActionResult> DownloadCertificate([FromRoute]int RecieptId)
+        public async Task<IActionResult> DownloadCertificate([FromRoute]int RecieptId, string token)
         {
             try
             {
+                //authorize access bye role
+                if (!_authService.AuthorizeRole(token, "Patient")) return Unauthorized("Invalid Role authorization");
                 var _GetFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Upload\\Files",RecieptId+".png");
                 var provider = new FileExtensionContentTypeProvider();
                 if (!provider.TryGetContentType(_GetFilePath, out var _ContentType))

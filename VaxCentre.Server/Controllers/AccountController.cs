@@ -108,8 +108,11 @@ namespace VaxCentre.Server.Controllers
         }
 
         [HttpGet("Activate/{Id}")]
-        public async Task<IActionResult> ActivateAccount([FromRoute] int Id)
+        public async Task<IActionResult> ActivateAccount([FromRoute] int Id, string token)
         {
+            //authorize access bye role
+            if (!_authService.AuthorizeRole(token, "Admin")) return Unauthorized("Invalid Role authorization");
+
             if (Id <= 0)
             {
                 return BadRequest("Invalid Id");
