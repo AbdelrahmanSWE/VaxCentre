@@ -1,25 +1,27 @@
-import React, { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import './App.css';
+// ListUsers.jsx
 
+import React, { useState, useEffect } from 'react';
+import Button from 'react-bootstrap/Button';
+import { fetchUnacceptedUsers } from '../../Services/AdminServices.jsx'; // Import the API service function
 
 function ListUsers() {
-    const [patients, setPatients] = useState([
-        { id: 1, name: 'Patient 1', state: 0 },
-        { id: 2, name: 'Patient 2', state: 0 },
-        { id: 3, name: 'Patient 3', state: 0 },
-        { id: 4, name: 'Patient 4', state: 0 }
-    ]);
+    const [patients, setPatients] = useState([]);
+
+    useEffect(() => {
+        // Fetch patients when the component mounts
+        fetchUnacceptedUsers()
+            .then((data) => setPatients(data))
+            .catch((error) => console.error('Error fetching patients:', error));
+    }, []);
 
     const handleAccept = (id) => {
         // Update the state of the patient with the given id to 1 (accepted)
-
+        // Implement your logic here
     };
 
-
     const handleDelete = (id) => {
-        // Remove the patient with the given id from the list(Database)
-
+        // Remove the patient with the given id from the list (Database)
+        // Implement your logic here
     };
 
     return (
@@ -36,7 +38,6 @@ function ListUsers() {
             </div>
         </div>
     );
-
 }
 
 export default ListUsers;

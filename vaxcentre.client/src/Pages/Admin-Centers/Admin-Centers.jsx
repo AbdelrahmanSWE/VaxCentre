@@ -2,18 +2,22 @@
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import './App.css';
+import '../../App.css';
 
 
 function Admin() {
     const [selectedCenter, setSelectedCenter] = useState(null);
-    const [showAddOverlay, setShowAddOverlay] = useState(false);
-    const [showEditOverlay, setShowEditOverlay] = useState(false);
+    //const [showAddOverlay, setShowAddOverlay] = useState(false);
+    //const [showEditOverlay, setShowEditOverlay] = useState(false);
     const [newCenter, setNewCenter] = useState({ name: '', vaccines: [] });
 
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const handleCloseAddModal = () => setShowAddModal(false);
+    const handleShowAddModal = () => setShowAddModal(true);
+
+    const [showEditModal, setShowEditModal] = useState(false);
+    const handleCloseEditModal = () => setShowEditModal(false);
+    const handleShowEditModal = () => setShowEditModal(true);
 
     const centers = [
         { id: 1, name: 'Center 1', vaccines: ['Vaccine 1', 'Vaccine 2'] },
@@ -22,13 +26,20 @@ function Admin() {
         { id: 4, name: 'Center 4', vaccines: ['Vaccine 7', 'Vaccine 8'] }
     ];
 
-    const handleAdd = () => {
-        setShowAddOverlay(true);
-    };
-
+    // const handleAdd = () => {
+    //     setShowAddOverlay(true);
+    // };
+    
     const handleEdit = (center) => {
         setSelectedCenter(center);
-        setShowEditOverlay(true);
+        setShowEditModal(true);
+    };
+    const handleUpdateCenter = (e) => {
+        e.preventDefault();
+        // Update the center in your state or database here
+        // ...
+        // Close the modal
+        setShowEditModal(false);
     };
 
     const handleDelete = (centerId) => {
@@ -37,16 +48,16 @@ function Admin() {
 
     const handleSave = () => {
         centers.push(newCenter);
-        setShowAddOverlay(false);
+        //setShowAddOverlay(false);
         setNewCenter({ name: '', vaccines: [] });
     };
 
     return (
         <>
-            <Button className='addBtn' variant="warning" onClick={handleShow}>
+            <Button className='addBtn' variant="warning" onClick={handleShowAddModal}>
                 +
             </Button>
-            <Modal className='' show={show} onHide={handleClose}>
+            <Modal className='' show={showAddModal} onHide={handleCloseAddModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Add Center</Modal.Title>
                 </Modal.Header>
@@ -69,7 +80,7 @@ function Admin() {
                     />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="secondary" onClick={handleCloseAddModal}>
                         Close
                     </Button>
                     <Button variant="primary" onClick={handleSave}>
@@ -77,21 +88,18 @@ function Admin() {
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <div>
-                {centers.map((center) => (
-                    <div className='card' key={center.id}>
-                        <h2>{center.name}</h2>
-                        <ul>
-                            {center.vaccines.map((vaccine, index) => (
-                                <li key={index}>{vaccine}</li>
-                            ))}
-                        </ul>
-                        <Button variant="info" onClick={() => handleEdit(center)}>Edit</Button>
-                        <Button variant="danger" onClick={() => handleDelete(center.id)}>Delete</Button>                </div>
-                ))}
-                {showEditOverlay && (
-                    <div className="overlay">
-                        <form className="modal" onSubmit={handleEdit}>
+            
+           
+
+
+           
+            <Modal className='' show={showEditModal} onHide={handleCloseEditModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Edit Center</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {selectedCenter && (
+                        <>
                             <h2>Edit Center</h2>
                             <label>
                                 Name:
@@ -101,12 +109,33 @@ function Admin() {
                                 Vaccines:
                                 <input type="text" value={selectedCenter.vaccines.join(', ')} onChange={(e) => setSelectedCenter({ ...selectedCenter, vaccines: e.target.value.split(', ') })} />
                             </label>
-                            <button type="submit">Save</button>
-                            <button type="button" onClick={() => setShowEditOverlay(false)}>Cancel</button>
-                        </form>
-                    </div>
-                )}
+                        </>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseEditModal}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={handleUpdateCenter}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <div>
+                {centers.map((center) => (
+                    <div className='card' key={center.id}>
+                        <h2>{center.name}</h2>
+                        <ul>
+                            {center.vaccines.map((vaccine, index) => (
+                                <li key={index}>{vaccine}</li>
+                            ))}
+                        </ul>
+                        <Button className='EditBtn' variant="primary" onClick={() => handleEdit(center)}>Edit Center</Button>
+                        <Button variant="danger" onClick={() => handleDelete(center.id)}>Delete</Button>
             </div>
+    ))}
+</div>
         </>
     );
 }
