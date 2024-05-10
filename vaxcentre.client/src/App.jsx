@@ -1,15 +1,4 @@
-import SignupForm from './Signup-form'
-import SigninForm from './Signin-form'
-import Admin from './Admin-Centers'
-import ListUsers from './Accept-Reject-Users'
-import Patient from './Patient-Centers'
-import React from 'react';
-import PatientsVaccination from './Paitents-Vaccination';
-import Container from 'react-bootstrap/Container';
-import Navbar from 'react-bootstrap/Navbar';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
