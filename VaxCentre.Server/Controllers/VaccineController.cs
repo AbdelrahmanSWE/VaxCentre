@@ -154,11 +154,12 @@ namespace VaxCentre.Server.Controllers
         }
 
 
-        [HttpDelete("Delete/{Id}")]
-        public async Task<IActionResult> RemoveVaccine([FromRoute] int Id,string token)
+        [HttpPost("Delete/{Id}")]
+        public async Task<IActionResult> RemoveVaccine([FromRoute] int Id, Dictionary<string, string> data)
         {
             try
             {
+                string token=data["token"];
                 //authorize access bye role
                 if (!_authService.AuthorizeRole(token, "Admin")) return Unauthorized("Invalid Role authorization");
                 if (Id <= 0)

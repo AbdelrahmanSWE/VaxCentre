@@ -50,7 +50,7 @@ function Vaccine() {
 
     const handleDelete = async (vaccine) => {
         try {
-            await deleteVaccine(vaccine.id);
+            await deleteVaccine(vaccine);
             console.log('Vaccine deleted successfully');
 
             fetchVaccines()

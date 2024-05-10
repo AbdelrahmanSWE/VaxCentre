@@ -19,5 +19,6 @@ namespace VaxCentre.Server.Data
         public DbSet<VaccinationReciept> VaccinationReciepts { get; set; }
 
 
+        
     }
 }

@@ -21,11 +21,11 @@ export async function deleteVaccine(vaccineId) {
     try {
         const authToken = localStorage.getItem('token');
         const response = await fetch(`https://localhost:32770/api/Vaccine/Delete/${vaccineId}`, {
-            method: 'DELETE',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${authToken}`
-            }
+            },
+            body: JSON.stringify({ token: authToken })
         });
 
         if (!response.ok) {
