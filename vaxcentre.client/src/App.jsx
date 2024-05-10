@@ -23,7 +23,7 @@ function App() {
                 <Col xs={5}><Admin /></Col>
                 <Col><PatientsVaccination /></Col>
             </Row>
-
+            
 
         </>
     );
