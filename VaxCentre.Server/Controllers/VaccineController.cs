@@ -126,10 +126,17 @@ namespace VaxCentre.Server.Controllers
 
 
         [HttpPost("Update/{Id}")]
-        public async Task<IActionResult> UpdateVaccine(UpdateVaccineDto input, [FromRoute] int Id,string token)
+        public async Task<IActionResult> UpdateVaccine(Dictionary<string, string> data, [FromRoute] int Id)
         {
             try
             {
+                string token = data["token"];
+                UpdateVaccineDto input = new UpdateVaccineDto {
+                    Name = data["Name"],
+                    Description = data["Description"],
+                    Precaution = data["Precaution"],
+                    GapTime = int.Parse(data["GapTime"])
+                };
                 //authorize access bye role
                 if (!_authService.AuthorizeRole(token, "Admin")) return Unauthorized("Invalid Role authorization");
                 if (Id <= 0)
