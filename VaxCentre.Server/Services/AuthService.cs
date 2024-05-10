@@ -107,11 +107,15 @@ namespace VaxCentre.Server.Services
             ClaimsPrincipal principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out validatedToken);
 
             return principal;
-            // Usage
-            //var principal = ValidateToken(token);
-            //var userName = principal.Claims.First(c => c.Type == ClaimTypes.Name).Value;
-            //var userId = principal.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-            //var role = principal.Claims.First(c => c.Type == ClaimTypes.Role).Value;
+        }
+        public bool AuthorizeRole(string token,string Role)
+        {
+            var principal = ValidateToken(token);
+            var userName = principal.Claims.First(c => c.Type == ClaimTypes.Name).Value;
+            var userId = principal.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            var role = principal.Claims.First(c => c.Type == ClaimTypes.Role).Value;
+
+            if (role == Role) { return true; } return false;
         }
     }
 }

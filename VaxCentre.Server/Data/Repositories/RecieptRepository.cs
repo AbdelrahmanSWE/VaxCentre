@@ -12,6 +12,18 @@ namespace VaxCentre.Server.Data.Repositories
         {
             _context = context;
         }
+        public async Task<List<VaccinationReciept>> GetAllDetailed()
+        {
+            try
+            {
+                var Result = await _context.VaccinationReciepts.Include(r => r.Vaccine).Include(r => r.Patient).Include(r => r.VaccineCentre).ToListAsync();
+                return Result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving all entities.", ex);
+            }
+        }
         public async Task<bool> ReserveDose2 (int Id, DateTime date)
         {
             var result = await _context.VaccinationReciepts.Include(r=>r.Vaccine).FirstOrDefaultAsync(x=> x.Id==Id);
