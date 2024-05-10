@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using VaxCentre.Server.Data;
 using VaxCentre.Server.Data.Interfaces;
 using VaxCentre.Server.Dtos.Account;
+using VaxCentre.Server.Dtos.Patient;
 using VaxCentre.Server.Dtos.Vaccine;
 using VaxCentre.Server.Dtos.VaccineCentre;
 using VaxCentre.Server.Models;
@@ -37,7 +38,8 @@ namespace VaxCentre.Server.Controllers
             {
 
                 var result = await _repository.GetAllAsync();
-                return Ok(result);
+                var resultDto = _mapper.Map<List<VaccineCentreHeaderDto>>(result);
+                return Ok(resultDto);
             }
             catch (Exception ex)
             {

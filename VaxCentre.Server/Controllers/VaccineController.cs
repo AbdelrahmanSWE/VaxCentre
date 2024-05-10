@@ -96,10 +96,18 @@ namespace VaxCentre.Server.Controllers
 
 
         [HttpPost("Create")]
-        public async Task<IActionResult> CreateVaccine(CreateVaccineDto input, string token)
+        public async Task<IActionResult> CreateVaccine( Dictionary<string, string> data)
         {
             try
             {
+                string token = data["token"];
+                // Remove the token from the data dictionary
+                data.Remove("token");
+                CreateVaccineDto input = new CreateVaccineDto();
+                input.Name = data["Name"];
+                input.Description = data["Description"];
+                input.Precaution = data["Precaution"];
+                input.GapTime = int.Parse(data["GapTime"]);
                 //authorize access bye role
                 if (!_authService.AuthorizeRole(token, "Admin")) return Unauthorized("Invalid Role authorization");
                 if (ModelState.IsValid)

@@ -12,6 +12,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import Vaccine from './Pages/Admin-Centers/Admin-Vaccines';
 
 function App() {
     return (
@@ -34,7 +35,7 @@ function App() {
             <Row>
                 <Col><ListUsers /></Col>
                 <Col xs={5}><Admin /></Col>
-                <Col></Col>
+                <Col><Vaccine/></Col>
             </Row>
 
 

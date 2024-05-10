@@ -1,71 +1,38 @@
-
-import { useState ,useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import '../../App.css';
-import { fetchCenters, RegisterVaccineCentre } from '../../Services/CenterServices.jsx';
-function Admin() {
-    const [centers, setCenters] = useState([]);
+import { fetchVaccines, CreateVaccine } from '../../Services/VaccineServices.jsx';
+
+function Vaccine() {
+    const [vaccines, setVaccines] = useState([]);
     useEffect(() => {
         // Fetch patients when the component mounts
-        fetchCenters()
-            .then((data) => setCenters(data))
-            .catch((error) => console.error('Error fetching centers:', error));
+        fetchVaccines()
+            .then((data) => setVaccines(data))
+            .catch((error) => console.error('Error fetching vaccines:', error));
     }, []);
-
-    const [selectedCenter, setSelectedCenter] = useState(null);
-    //const [showAddOverlay, setShowAddOverlay] = useState(false);
-    //const [showEditOverlay, setShowEditOverlay] = useState(false);
-    //const [newCenter, setNewCenter] = useState({ name: '', vaccines: [] });
 
     const [showAddModal, setShowAddModal] = useState(false);
     const handleCloseAddModal = () => setShowAddModal(false);
     const handleShowAddModal = () => setShowAddModal(true);
 
-    const [showEditModal, setShowEditModal] = useState(false);
-    const handleCloseEditModal = () => setShowEditModal(false);
-    const handleShowEditModal = () => setShowEditModal(true);
-
-    // const handleAdd = () => {
-    //     setShowAddOverlay(true);
-    // };
-
-    const handleEdit = (center) => {
-        setSelectedCenter(center);
-        setShowEditModal(true);
-    };
-
-    const handleUpdateCenter = (e) => {
-        e.preventDefault();
-        // Update the center in your state or database here
-        //...
-        //Close the modal
-        setShowEditModal(false);
-    };
-
-    const handleDelete = (centerId) => {
-        // Implement delete
-    };
-
-
     const handleSave = async (e) => {
         e.preventDefault();
 
         const data = {
-            UserName: e.target.UserName.value,
-            Email: e.target.Email.value,
-            DisplayName: e.target.DisplayName.value,
-            PhoneNumber: e.target.PhoneNumber.value,
-            Address: e.target.Address.value,
-            Password: e.target.Password.value
+            Name: e.target.Name.value,
+            Description: e.target.Description.value,
+            Precaution: e.target.Precaution.value,
+            GapTime: e.target.GapTime.value
         }
         console.log(data);
         try {
-            const result = await RegisterVaccineCentre(data);
+            const result = await CreateVaccine(data);
             console.log('registered successful', result);
-            
-            fetchCenters()
-                .then((data) => setCenters(data))
+
+            fetchVaccines()
+                .then((data) => setVaccines(data))
                 .catch((error) => console.error('Error fetching centers:', error));
 
             handleCloseAddModal();
@@ -76,41 +43,41 @@ function Admin() {
 
     }
 
+    const handleEdit = (center) => {
+        setSelectedCenter(center);
+        setShowEditModal(true);
+    };
+
+    const handleDelete = (centerId) => {
+        // Implement delete
+    };
+
     return (
         <>
-        
             <Button className='addBtn' variant="warning" onClick={handleShowAddModal}>
                 +
             </Button>
             <Modal className='' show={showAddModal} onHide={handleCloseAddModal}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Add Center</Modal.Title>
+                    <Modal.Title>Add Vaccine</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <form onSubmit={handleSave}>
                         <div className='form-group'>
-                            <label htmlFor='UserName'>Username</label>
-                            <input type='text' id='UserName' name='UserName' />
+                            <label htmlFor='Name'>Name:</label>
+                            <input type='text' id='Name' name='Name' />
                         </div>
                         <div className='form-group'>
-                            <label htmlFor='Email'>Email</label>
-                            <input type='Email' id='Email' name='Email' />
+                            <label htmlFor='Description'>Description:</label>
+                            <input type='text' id='Description' name='Description' />
                         </div>
                         <div className='form-group'>
-                            <label htmlFor='DisplayName'>Display Name</label>
-                            <input type='text' id='DisplayName' name='DisplayName' />
+                            <label htmlFor='Precaution'>Precaution:</label>
+                            <input type='text' id='Precaution' name='Precaution' />
                         </div>
                         <div className='form-group'>
-                            <label htmlFor='PhoneNumber'>Phone Number</label>
-                            <input type='text' id='PhoneNumber' name='PhoneNumber' />
-                        </div>
-                        <div className='form-group'>
-                            <label htmlFor='Address'>Address</label>
-                            <input type='text' id='Address' name='Address' />
-                        </div>
-                        <div className='form-group'>
-                            <label htmlFor='Password'>Password</label>
-                            <input type='Password' id='Password' name='Password' />
+                            <label htmlFor='GapTime'>Gap Time:</label>
+                            <input type='number' id='GapTime' name='GapTime' />
                         </div>
                         <Button variant="primary" type="submit">
                             Save Changes
@@ -121,10 +88,9 @@ function Admin() {
                     <Button variant="secondary" onClick={handleCloseAddModal}>
                         Close
                     </Button>
-                    
+
                 </Modal.Footer>
             </Modal>
-
 
 
 
@@ -161,22 +127,21 @@ function Admin() {
 
 
 
-
-
             <div>
-                {centers.map((center) => (
-                    <div className='card' key={center.id}>
-                        <h2>{center.displayName}</h2>
-                        <ul>
-                            -
-                        </ul>
-                        <Button className='EditBtn' variant="primary" onClick={() => handleEdit(center)}>Edit Center</Button>
-                        <Button variant="danger" onClick={() => handleDelete(center.id)}>Delete</Button>
+                {vaccines.map((vaccine) => (
+                    <div className='card' key={vaccine.id}>
+                        <h2>{vaccine.name}</h2>
+                        <h5>Description:</h5>
+                        <p>{vaccine.description}</p>
+                        <p>Precaution: {vaccine.precaution}</p>
+                        <span>Gap Days: {vaccine.gapTime}</span>
+                        <Button className='EditBtn' variant="primary" onClick={() => handleEdit(vaccine.id)}>Edit Center</Button>
+                        <Button variant="danger" onClick={() => handleDelete(vaccine.id)}>Delete</Button>
                     </div>
                 ))}
             </div>
         </>
     );
-}
 
-export default Admin;
+}
+export default Vaccine;
