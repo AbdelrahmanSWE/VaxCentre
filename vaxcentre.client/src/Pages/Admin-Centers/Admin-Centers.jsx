@@ -3,7 +3,7 @@ import { useState ,useEffect} from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import '../../App.css';
-import { fetchCenters, RegisterVaccineCentre } from '../../Services/CenterServices.jsx';
+import { fetchCenters, RegisterVaccineCentre,deleteCenter } from '../../Services/CenterServices.jsx';
 function Admin() {
     const [centers, setCenters] = useState([]);
     useEffect(() => {
@@ -43,10 +43,18 @@ function Admin() {
         setShowEditModal(false);
     };
 
-    const handleDelete = (centerId) => {
-        // Implement delete
-    };
+    const handleDelete = async (centre) => {
+        try {
+            await deleteCenter(centre);
+            console.log('centre deleted successfully');
 
+            fetchCenters()
+                .then((data) => setCenters(data))
+                .catch((error) => console.error('Error fetching centres:', error));
+        } catch (error) {
+            console.error('Error deleting centre:', error);
+        }
+    };
 
     const handleSave = async (e) => {
         e.preventDefault();
