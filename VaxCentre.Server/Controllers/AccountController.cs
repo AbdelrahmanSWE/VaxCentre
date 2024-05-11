@@ -41,33 +41,42 @@ namespace VaxCentre.Server.Controllers
             var patient = _mapper.Map<Patient>(RegisterDto);
             if (patient.Password == null) return BadRequest(ModelState);
             // Hash and salt the password
+            string unhashedpassword = patient.Password;
             patient.Password = _authService.HashPassword(patient.Password);
             patient.Role = "Patient";
             // Add the patient to the repository
             await PatientRepository.CreateAsync(patient);
 
             // Return a success response
-            return Ok();
+            var cred = new LoginDto();
+            cred.UserName = patient.UserName;
+            cred.Password = unhashedpassword;
+            // Return a success response
+            return await Login(cred);
         }
 
         [HttpPost("VaccineCentreRegister")]
         public async Task<IActionResult> RegisterVaccineCentre(CentreRegisterDto RegisterDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            
-            if (await AccountRepository.GetByUserNameAsync(RegisterDto.UserName)!=null) return BadRequest("Username is already taken");
+
+            if (await AccountRepository.GetByUserNameAsync(RegisterDto.UserName) != null) return BadRequest("Username is already taken");
             // Map the DTO to the domain model
             var vaccineCentre = _mapper.Map<VaccineCentre>(RegisterDto);
             if (vaccineCentre.Password == null) return BadRequest(ModelState);
             // Hash and salt the password
+            string unhashedpassword = vaccineCentre.Password;
             vaccineCentre.Password = _authService.HashPassword(vaccineCentre.Password);
             vaccineCentre.Role = "VaccineCentre";
 
             // Add the vaccine centre to the repository
             await VaccineCentreRepository.CreateAsync(vaccineCentre);
 
+            var cred = new LoginDto() ;
+            cred.UserName = vaccineCentre.UserName;
+            cred.Password = unhashedpassword;
             // Return a success response
-            return Ok();
+            return await Login(cred);
         }
 
         [HttpPost("Login")]
@@ -100,16 +109,17 @@ namespace VaxCentre.Server.Controllers
             }
             return account.Role switch
             {
-                "Admin" => Ok(token),
-                "VaccineCentre" => Ok(token),
-                "Patient" => Ok(token),
+                "Admin" => Ok(new { token }),
+                "VaccineCentre" => Ok(new { token }),
+                "Patient" => Ok(new { token }),
                 _ => Unauthorized("Unauth"),
             };
         }
 
-        [HttpGet("Activate/{Id}")]
-        public async Task<IActionResult> ActivateAccount([FromRoute] int Id, string token)
+        [HttpPost("Activate/{Id}")]
+        public async Task<IActionResult> ActivateAccount([FromRoute] int Id, Dictionary<string, string> data)
         {
+            string token = data["token"];
             //authorize access bye role
             if (!_authService.AuthorizeRole(token, "Admin")) return Unauthorized("Invalid Role authorization");
 

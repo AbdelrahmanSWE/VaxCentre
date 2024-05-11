@@ -1,26 +1,31 @@
-import React, { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import './App.css';
+// ListUsers.jsx
 
+import React, { useState, useEffect } from 'react';
+import Button from 'react-bootstrap/Button';
+import { fetchUnacceptedUsers, acceptPatient } from '../../Services/AdminServices.jsx'; // Import the API service function
 
 function ListUsers() {
-    const [patients, setPatients] = useState([
-        { id: 1, name: 'Patient 1', state: 0 },
-        { id: 2, name: 'Patient 2', state: 0 },
-        { id: 3, name: 'Patient 3', state: 0 },
-        { id: 4, name: 'Patient 4', state: 0 }
-    ]);
+    const [patients, setPatients] = useState([]);
 
-    const handleAccept = (id) => {
-        // Update the state of the patient with the given id to 1 (accepted)
+    useEffect(() => {
+        // Fetch patients when the component mounts
+        fetchUnacceptedUsers()
+            .then((data) => setPatients(data))
+            .catch((error) => console.error('Error fetching patients:', error));
+    }, []);
 
+    const handleAccept = async (id) => {
+        try {
+            const patient = await acceptPatient(id);
+            console.log('Patient accepted:', patient);
+            // Update the patients state to remove the accepted patient
+            setPatients(prevPatients => prevPatients.filter(p => p.id !== id));
+        } catch (error) {
+            console.error('Error accepting patient:', error);
+        }
     };
 
 
-    const handleDelete = (id) => {
-        // Remove the patient with the given id from the list(Database)
-
-    };
 
     return (
         <div>
@@ -28,15 +33,13 @@ function ListUsers() {
             <div>
                 {patients.map((patient) => (
                     <div className='card' key={patient.id}>
-                        <h2>{patient.name}</h2>
+                        <h2>{patient.firstName} {patient.lastName}</h2>
                         <Button variant="success" onClick={() => handleAccept(patient.id)}>Accept</Button>
-                        <Button variant="danger" onClick={() => handleDelete(patient.id)}>Delete</Button>
                     </div>
                 ))}
             </div>
         </div>
     );
-
 }
 
 export default ListUsers;

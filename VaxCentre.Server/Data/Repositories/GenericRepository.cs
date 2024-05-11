@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using VaxCentre.Server.Data.Interfaces;
-using VaxCentre.Server.Models;
 
 namespace VaxCentre.Server.Data.Repositories
 {
@@ -8,7 +7,7 @@ namespace VaxCentre.Server.Data.Repositories
     {
         private readonly DBContext _context;
         private DbSet<T> _entity;
-        public GenericRepository(DBContext context) 
+        public GenericRepository(DBContext context)
         {
             _context = context;
             _entity = _context.Set<T>();

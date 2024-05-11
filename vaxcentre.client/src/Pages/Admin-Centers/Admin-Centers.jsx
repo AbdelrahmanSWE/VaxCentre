@@ -1,111 +1,166 @@
 
-import { useState } from 'react';
+import { useState ,useEffect} from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import './App.css';
-
-
+import '../../App.css';
+import { fetchCenters, RegisterVaccineCentre,deleteCenter,addVaccineToCenter} from '../../Services/CenterServices.jsx';
 function Admin() {
+    const [centers, setCenters] = useState([]);
+    useEffect(() => {
+        // Fetch patients when the component mounts
+        fetchCenters()
+            .then((data) => setCenters(data))
+            .catch((error) => console.error('Error fetching centers:', error));
+    }, []);
+
     const [selectedCenter, setSelectedCenter] = useState(null);
-    const [showAddOverlay, setShowAddOverlay] = useState(false);
-    const [showEditOverlay, setShowEditOverlay] = useState(false);
-    const [newCenter, setNewCenter] = useState({ name: '', vaccines: [] });
+    //const [showAddOverlay, setShowAddOverlay] = useState(false);
+    //const [showEditOverlay, setShowEditOverlay] = useState(false);
+    //const [newCenter, setNewCenter] = useState({ name: '', vaccines: [] });
 
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const handleCloseAddModal = () => setShowAddModal(false);
+    const handleShowAddModal = () => setShowAddModal(true);
 
-    const centers = [
-        { id: 1, name: 'Center 1', vaccines: ['Vaccine 1', 'Vaccine 2'] },
-        { id: 2, name: 'Center 2', vaccines: ['Vaccine 3', 'Vaccine 4'] },
-        { id: 3, name: 'Center 3', vaccines: ['Vaccine 8', 'Vaccine 6'] },
-        { id: 4, name: 'Center 4', vaccines: ['Vaccine 7', 'Vaccine 8'] }
-    ];
+    const [showEditModal, setShowEditModal] = useState(false);
+    const handleCloseEditModal = () => setShowEditModal(false);
+    const handleShowEditModal = () => setShowEditModal(true);
 
-    const handleAdd = () => {
-        setShowAddOverlay(true);
+    // const handleAdd = () => {
+    //     setShowAddOverlay(true);
+    // };
+
+    // const handleEdit = (center) => {
+    //     setSelectedCenter(center);
+    //     setShowEditModal(true);
+    // };
+
+    // const handleUpdateCenter = (e) => {
+    //     e.preventDefault();
+    //     // Update the center in your database here
+    //     //...
+    //     //Close the modal
+    //     setShowEditModal(false);
+    // };
+
+    const handleDelete = async (centre) => {
+        try {
+            await deleteCenter(centre);
+            console.log('centre deleted successfully');
+
+            fetchCenters()
+                .then((data) => setCenters(data))
+                .catch((error) => console.error('Error fetching centres:', error));
+        } catch (error) {
+            console.error('Error deleting centre:', error);
+        }
     };
 
-    const handleEdit = (center) => {
-        setSelectedCenter(center);
-        setShowEditOverlay(true);
-    };
+    const handleSave = async (e) => {
+        e.preventDefault();
 
-    const handleDelete = (centerId) => {
-        // Implement delete
-    };
+        const data = {
+            UserName: e.target.UserName.value,
+            Email: e.target.Email.value,
+            DisplayName: e.target.DisplayName.value,
+            PhoneNumber: e.target.PhoneNumber.value,
+            Address: e.target.Address.value,
+            Password: e.target.Password.value
+        }
+        console.log(data);
+        try {
+            const result = await RegisterVaccineCentre(data);
+            console.log('registered successful', result);
+            
+            fetchCenters()
+                .then((data) => setCenters(data))
+                .catch((error) => console.error('Error fetching centers:', error));
 
-    const handleSave = () => {
-        centers.push(newCenter);
-        setShowAddOverlay(false);
-        setNewCenter({ name: '', vaccines: [] });
+            handleCloseAddModal();
+
+        } catch (error) {
+            console.error('Signup failed', error);
+        }
+
+    }
+
+    const addVaccine = (event, centerId) => {
+        event.preventDefault();
+        const vaccineId = document.getElementById(`vaxId-${centerId}`).value;
+        const centreId = document.getElementById(`centreId-${centerId}`).value;
+        addVaccineToCenter(centreId, vaccineId);
+
+        document.getElementById(`vaxId-${centerId}`).value = '';
     };
 
     return (
         <>
-            <Button className='addBtn' variant="warning" onClick={handleShow}>
+        
+            <Button className='addBtn' variant="warning" onClick={handleShowAddModal}>
                 +
             </Button>
-            <Modal className='' show={show} onHide={handleClose}>
+            <Modal className='' show={showAddModal} onHide={handleCloseAddModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Add Center</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <label htmlFor="centerName">Name:</label>
-                    <input
-                        id="centerName"
-                        name='centerName'
-                        type="text"
-                        value={newCenter.name}
-                        onChange={(e) => setNewCenter({ ...newCenter, name: e.target.value })}
-                    />
-                    <label htmlFor="vaccines">Vaccines:</label>
-                    <input
-                        id='vaccines'
-                        name='vaccines'
-                        type="text"
-                        value={newCenter.vaccines.join(', ')}
-                        onChange={(e) => setNewCenter({ ...newCenter, vaccines: e.target.value.split(', ') })}
-                    />
+                    <form onSubmit={handleSave}>
+                        <div className='form-group'>
+                            <label htmlFor='UserName'>Username</label>
+                            <input type='text' id='UserName' name='UserName' />
+                        </div>
+                        <div className='form-group'>
+                            <label htmlFor='Email'>Email</label>
+                            <input type='Email' id='Email' name='Email' />
+                        </div>
+                        <div className='form-group'>
+                            <label htmlFor='DisplayName'>Display Name</label>
+                            <input type='text' id='DisplayName' name='DisplayName' />
+                        </div>
+                        <div className='form-group'>
+                            <label htmlFor='PhoneNumber'>Phone Number</label>
+                            <input type='text' id='PhoneNumber' name='PhoneNumber' />
+                        </div>
+                        <div className='form-group'>
+                            <label htmlFor='Address'>Address</label>
+                            <input type='text' id='Address' name='Address' />
+                        </div>
+                        <div className='form-group'>
+                            <label htmlFor='Password'>Password</label>
+                            <input type='Password' id='Password' name='Password' />
+                        </div>
+                        <Button variant="primary" type="submit">
+                            Save Changes
+                        </Button>
+                    </form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="secondary" onClick={handleCloseAddModal}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={handleSave}>
-                        Save Changes
-                    </Button>
+                    
                 </Modal.Footer>
             </Modal>
+
+
+
+
+
             <div>
                 {centers.map((center) => (
                     <div className='card' key={center.id}>
-                        <h2>{center.name}</h2>
+                        <h2>{center.displayName}</h2>
                         <ul>
-                            {center.vaccines.map((vaccine, index) => (
-                                <li key={index}>{vaccine}</li>
-                            ))}
+
                         </ul>
-                        <Button variant="info" onClick={() => handleEdit(center)}>Edit</Button>
-                        <Button variant="danger" onClick={() => handleDelete(center.id)}>Delete</Button>                </div>
-                ))}
-                {showEditOverlay && (
-                    <div className="overlay">
-                        <form className="modal" onSubmit={handleEdit}>
-                            <h2>Edit Center</h2>
-                            <label>
-                                Name:
-                                <input type="text" value={selectedCenter.name} onChange={(e) => setSelectedCenter({ ...selectedCenter, name: e.target.value })} />
-                            </label>
-                            <label>
-                                Vaccines:
-                                <input type="text" value={selectedCenter.vaccines.join(', ')} onChange={(e) => setSelectedCenter({ ...selectedCenter, vaccines: e.target.value.split(', ') })} />
-                            </label>
-                            <button type="submit">Save</button>
-                            <button type="button" onClick={() => setShowEditOverlay(false)}>Cancel</button>
+                        <form onSubmit={(event) => addVaccine(event, center.id)}>
+                            <input id={`centreId-${center.id}`} type="hidden" placeholder="Add Vaccine" value={center.id}></input>
+                            <input id={`vaxId-${center.id}`} type="text" placeholder="Add Vaccine"></input>
+                            <Button variant="primary" type="submit">Add Vaccine</Button>
                         </form>
+                        <Button variant="danger" onClick={() => handleDelete(center.id)}>Delete</Button>
                     </div>
-                )}
+                ))}
             </div>
         </>
     );

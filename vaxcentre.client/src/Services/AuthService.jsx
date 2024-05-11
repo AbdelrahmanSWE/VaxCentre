@@ -1,8 +1,5 @@
 
 
-
-
-
 export const authServiceRegister = async (data) => {
     const response = await fetch('https://localhost:32768/api/Account/Register', {
         method: 'POST',
@@ -33,8 +30,12 @@ export const authServiceLogin = async (data) => {
     if (!response.ok) {
         console.error(response);
         throw new Error(response);
-
     }
 
-    return response.json();
+    const responseData = await response.json();
+
+    // Save the token in local storage
+    localStorage.setItem('token', responseData.token);
+
+    return responseData;
 }

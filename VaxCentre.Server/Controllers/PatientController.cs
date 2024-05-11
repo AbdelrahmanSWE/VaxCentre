@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 using VaxCentre.Server.Data;
 using VaxCentre.Server.Data.Interfaces;
 using VaxCentre.Server.Data.Repositories;
+using VaxCentre.Server.Dtos.Patient;
 using VaxCentre.Server.Models;
 using VaxCentre.Server.Services;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -50,15 +51,19 @@ namespace VaxCentre.Server.Controllers
                 return StatusCode(500, $"An error occurred while retrieving the data in the controller method. \n{ex.Message}");
             }
         }
-        [HttpGet("Unapproved")]
-        public async Task<IActionResult> DisplayUnapprovedPatients(string token)
+
+
+        [HttpPost("Unapproved")]
+        public async Task<IActionResult> DisplayUnapprovedPatients(Dictionary<string, string> data)
         {
             //authorize access bye role
+            string token = data["token"];
             if (!_authService.AuthorizeRole(token, "Admin")) return Unauthorized("Invalid Role authorization");
             try
             {
                 var result = await _repository.GetByState(0);
-                return Ok(result);
+                var resultDto = _mapper.Map<List<DisplayPatientNameDto>>(result);
+                return Ok(resultDto);
             }
             catch (Exception ex)
             {

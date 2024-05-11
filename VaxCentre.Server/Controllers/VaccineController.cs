@@ -28,7 +28,8 @@ namespace VaxCentre.Server.Controllers
             try
             {
                 var result = await _repository.GetAllAsync();
-                return Ok(result);
+                var vaccineDtos = _mapper.Map<List<VaccineDisplayDto>>(result);
+                return Ok(vaccineDtos);
             }
             catch (Exception ex)
             {
@@ -96,10 +97,18 @@ namespace VaxCentre.Server.Controllers
 
 
         [HttpPost("Create")]
-        public async Task<IActionResult> CreateVaccine(CreateVaccineDto input, string token)
+        public async Task<IActionResult> CreateVaccine( Dictionary<string, string> data)
         {
             try
             {
+                string token = data["token"];
+                // Remove the token from the data dictionary
+                data.Remove("token");
+                CreateVaccineDto input = new CreateVaccineDto();
+                input.Name = data["Name"];
+                input.Description = data["Description"];
+                input.Precaution = data["Precaution"];
+                input.GapTime = int.Parse(data["GapTime"]);
                 //authorize access bye role
                 if (!_authService.AuthorizeRole(token, "Admin")) return Unauthorized("Invalid Role authorization");
                 if (ModelState.IsValid)
@@ -117,11 +126,18 @@ namespace VaxCentre.Server.Controllers
         }
 
 
-        [HttpPost("Update/{Id}")]
-        public async Task<IActionResult> UpdateVaccine(UpdateVaccineDto input, [FromRoute] int Id,string token)
+        [HttpPut("Update/{Id}")]
+        public async Task<IActionResult> UpdateVaccine(Dictionary<string, string> data, [FromRoute] int Id)
         {
             try
             {
+                string token = data["token"];
+                UpdateVaccineDto input = new UpdateVaccineDto {
+                    Name = data["name"],
+                    Description = data["description"],
+                    Precaution = data["precaution"],
+                    GapTime = int.Parse(data["gapTime"])
+                };
                 //authorize access bye role
                 if (!_authService.AuthorizeRole(token, "Admin")) return Unauthorized("Invalid Role authorization");
                 if (Id <= 0)
@@ -146,11 +162,12 @@ namespace VaxCentre.Server.Controllers
         }
 
 
-        [HttpDelete("Delete/{Id}")]
-        public async Task<IActionResult> RemoveVaccine([FromRoute] int Id,string token)
+        [HttpPost("Delete/{Id}")]
+        public async Task<IActionResult> RemoveVaccine([FromRoute] int Id, Dictionary<string, string> data)
         {
             try
             {
+                string token=data["token"];
                 //authorize access bye role
                 if (!_authService.AuthorizeRole(token, "Admin")) return Unauthorized("Invalid Role authorization");
                 if (Id <= 0)

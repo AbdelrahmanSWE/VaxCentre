@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using VaxCentre.Server.Data;
 using VaxCentre.Server.Data.Interfaces;
 using VaxCentre.Server.Dtos.Account;
+using VaxCentre.Server.Dtos.Patient;
 using VaxCentre.Server.Dtos.Vaccine;
 using VaxCentre.Server.Dtos.VaccineCentre;
 using VaxCentre.Server.Models;
@@ -37,7 +38,8 @@ namespace VaxCentre.Server.Controllers
             {
 
                 var result = await _repository.GetAllAsync();
-                return Ok(result);
+                var resultDto = _mapper.Map<List<VaccineCentreHeaderDto>>(result);
+                return Ok(resultDto);
             }
             catch (Exception ex)
             {
@@ -111,14 +113,14 @@ namespace VaxCentre.Server.Controllers
         }
 
         [HttpPost("Assign/{Id}")]
-        public async Task<IActionResult> AssignVaccineToCentre([FromRoute] int Id, Dictionary<string, string> data)
+        public async Task<IActionResult> AssignVaccineToCentre([FromRoute] int Id , Dictionary<string, string> data)
         {
             try
             {
                 string token = data["token"];
                 int VaccineId = int.Parse(data["VaccineId"]);
                 //authorize access bye role
-                if (!_authService.AuthorizeRole(token, "VaccineCentre")) return Unauthorized("Invalid Role authorization");
+                if (!_authService.AuthorizeRole(token, "Admin")) return Unauthorized("Invalid Role authorization");
                 var vaccineCentre = await _repository.AssignVaccineToCentre(Id, VaccineId);
 
 
@@ -131,7 +133,8 @@ namespace VaxCentre.Server.Controllers
             }
         }
 
-        [HttpDelete("Delete/{Id}")]
+
+        [HttpPost("Delete/{Id}")]
         public async Task<IActionResult> RemoveVaccineCentre([FromRoute] int Id, Dictionary<string, string> data)
         {
             try
