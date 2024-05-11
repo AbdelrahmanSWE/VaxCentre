@@ -61,3 +61,24 @@ export async function deleteCenter(centerId) {
         console.error('Error deleting center:', error);
     }
 }
+export async function addVaccineToCenter(centerId, vaccineId) {
+    try {
+        const authToken = localStorage.getItem('token');
+        const response = await fetch(`https://localhost:32768/api/VaccineCentre/Assign/${centerId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ token: authToken, VaccineId: vaccineId })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to assign vaccine to center');
+        }
+
+        const data = await response.json();
+        return data; // Assuming the response contains the updated center information
+    } catch (error) {
+        console.error('Error assigning vaccine to center:', error);
+    }
+}

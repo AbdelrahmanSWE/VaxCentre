@@ -3,7 +3,7 @@ import { useState ,useEffect} from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import '../../App.css';
-import { fetchCenters, RegisterVaccineCentre,deleteCenter } from '../../Services/CenterServices.jsx';
+import { fetchCenters, RegisterVaccineCentre,deleteCenter,addVaccineToCenter} from '../../Services/CenterServices.jsx';
 function Admin() {
     const [centers, setCenters] = useState([]);
     useEffect(() => {
@@ -30,18 +30,18 @@ function Admin() {
     //     setShowAddOverlay(true);
     // };
 
-    const handleEdit = (center) => {
-        setSelectedCenter(center);
-        setShowEditModal(true);
-    };
+    // const handleEdit = (center) => {
+    //     setSelectedCenter(center);
+    //     setShowEditModal(true);
+    // };
 
-    const handleUpdateCenter = (e) => {
-        e.preventDefault();
-        // Update the center in your state or database here
-        //...
-        //Close the modal
-        setShowEditModal(false);
-    };
+    // const handleUpdateCenter = (e) => {
+    //     e.preventDefault();
+    //     // Update the center in your database here
+    //     //...
+    //     //Close the modal
+    //     setShowEditModal(false);
+    // };
 
     const handleDelete = async (centre) => {
         try {
@@ -83,6 +83,15 @@ function Admin() {
         }
 
     }
+
+    const addVaccine = (event) => {
+    
+        event.preventDefault();
+        const vaccineId = document.getElementById('vaxId').value;
+        addVaccineToCenter(selectedCenter.id,vaccineId);
+    
+        document.getElementById('vaxId').value = '';
+    };
 
     return (
         <>
@@ -137,48 +146,19 @@ function Admin() {
 
 
 
-            <Modal className='' show={showEditModal} onHide={handleCloseEditModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Edit Center</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {selectedCenter && (
-                        <>
-                            <h2>Edit Center</h2>
-                            <label>
-                                Name:
-                                <input type="text" value={selectedCenter.name} onChange={(e) => setSelectedCenter({ ...selectedCenter, name: e.target.value })} />
-                            </label>
-                            <label>
-                                Vaccines:
-                                <input type="text" value={selectedCenter.vaccines.join(', ')} onChange={(e) => setSelectedCenter({ ...selectedCenter, vaccines: e.target.value.split(', ') })} />
-                            </label>
-                        </>
-                    )}
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseEditModal}>
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={handleUpdateCenter}>
-                        Save Changes
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-
-
-
-
-
-
             <div>
                 {centers.map((center) => (
                     <div className='card' key={center.id}>
                         <h2>{center.displayName}</h2>
                         <ul>
-                            -
+                            {center.vaccines.map((vaccine) => (
+                                <li key={vaccine}>{vaccine}</li>
+                            ))}
                         </ul>
-                        <Button className='EditBtn' variant="primary" onClick={() => handleEdit(center)}>Edit Center</Button>
+                        <form onSubmit={addVaccine}>
+                            <input id="vaxId" type="text" placeholder="Add Vaccine"></input>
+                            <Button variant="primary" type="submit">Add Vaccine</Button>
+                        </form>
                         <Button variant="danger" onClick={() => handleDelete(center.id)}>Delete</Button>
                     </div>
                 ))}
