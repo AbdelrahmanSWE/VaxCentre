@@ -79,10 +79,16 @@ namespace VaxCentre.Server.Controllers
         }
 
         [HttpPost("Update/{Id}")]
-        public async Task<IActionResult> UpdateVaccineCentre(UpdateVaccineCentreDto input, [FromRoute] int Id, string token)
+        public async Task<IActionResult> UpdateVaccineCentre( [FromRoute] int Id, Dictionary<string, string> data)
         {
             try
             {
+                UpdateVaccineCentreDto input=new UpdateVaccineCentreDto
+                {
+                    DisplayName = data["Display"],
+                    Address = data["Address"]
+                };
+                string token = data["token"];
                 //authorize access bye role
                 if (!_authService.AuthorizeRole(token, "VaccineCentre")) return Unauthorized("Invalid Role authorization");
                 if (Id <= 0)
@@ -127,6 +133,7 @@ namespace VaxCentre.Server.Controllers
             }
         }
 
+
         [HttpPost("Delete/{Id}")]
         public async Task<IActionResult> RemoveVaccineCentre([FromRoute] int Id, Dictionary<string, string> data)
         {
@@ -155,28 +162,31 @@ namespace VaxCentre.Server.Controllers
             }
         }
 
-        [HttpGet("Registered/{VaccineCentreId}")]
-        public async Task<IActionResult> GetRegisteredPatients([FromRoute]int VaccineCentreId, string token)
+        [HttpPost("Registered/{VaccineCentreId}")]
+        public async Task<IActionResult> GetRegisteredPatients([FromRoute]int VaccineCentreId, Dictionary<string, string> data)
         {
             //authorize access bye role
+            string token = data["token"];
             if (!_authService.AuthorizeRole(token, "Admin")) return Unauthorized("Invalid Role authorization");
             var result = await _recieptRepository.GetByCentre(VaccineCentreId);
             return Ok(result);
         }
 
-        [HttpGet("ApproveDos1/{RecieptId}")]
-        public async Task<IActionResult> ApproveDose1([FromRoute]int RecieptId, string token)
+        [HttpPost("ApproveDos1/{RecieptId}")]
+        public async Task<IActionResult> ApproveDose1([FromRoute]int RecieptId, Dictionary<string, string> data)
         {
             //authorize access bye role
+            string token = data["token"];
             if (!_authService.AuthorizeRole(token, "VaccineCentre")) return Unauthorized("Invalid Role authorization");
             if ( await _recieptRepository.ApproveDose1(RecieptId))return Ok(RecieptId);
             return BadRequest();
         }
 
-        [HttpGet("ApproveDos2/{RecieptId}")]
-        public async Task<IActionResult> ApproveDose2([FromRoute] int RecieptId, string token)
+        [HttpPost("ApproveDos2/{RecieptId}")]
+        public async Task<IActionResult> ApproveDose2([FromRoute] int RecieptId, Dictionary<string, string> data)
         {
             //authorize access bye role
+            string token = data["token"];
             if (!_authService.AuthorizeRole(token, "VaccineCentre")) return Unauthorized("Invalid Role authorization");
             if (await _recieptRepository.ApproveDose2(RecieptId)) return Ok(RecieptId);
             return BadRequest();

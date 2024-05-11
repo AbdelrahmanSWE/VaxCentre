@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 /*import SignupForm from './Signup-form'*/
 import SigninForm from './Pages/Signin-form/Signin-form';
@@ -13,10 +14,15 @@ import Col from 'react-bootstrap/Col';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import Vaccine from './Pages/Admin-Centers/Admin-Vaccines';
+import React from 'react';
+import { Navbar, Container, Row, Col } from 'react-bootstrap';
+import './App.css';
+import Patient from './Pages/Patient-Centers/Paitent-Centers';
 
-function App() {
+
+const App = () => {
     return (
-        <>
+        <div>
             <Navbar bg="dark" data-bs-theme="dark">
                 <Container>
                     <Navbar.Brand href="">
@@ -33,14 +39,18 @@ function App() {
             </Navbar>
             <Row><SigninForm/></Row>
             <Row>
+
                 <Col><ListUsers /></Col>
                 <Col xs={5}><Admin /></Col>
                 <Col><Vaccine/></Col>
+
+                <Col><Patient /></Col> 
+
             </Row>
 
-
-        </>
+        </div>
+          
     );
-}
+};
 
 export default App;
