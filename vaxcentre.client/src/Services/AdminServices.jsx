@@ -4,7 +4,7 @@ export const fetchUnacceptedUsers = async () => {
 
     try {
         console.log(authToken)
-        const response = await fetch('https://localhost:32770/api/Patient/Unapproved', {
+        const response = await fetch('https://localhost:32768/api/Patient/Unapproved', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ export const acceptPatient = async (id) => {
     // Get the token from local storage
     const authToken = localStorage.getItem('token');
 
-    const response = await fetch(`https://localhost:32770/api/Account/Activate/${id}`, {
+    const response = await fetch(`https://localhost:32768/api/Account/Activate/${id}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

@@ -1,6 +1,6 @@
 export const CreateVaccine = async (data) => { 
     const authToken = localStorage.getItem('token');
-    const response = await fetch('https://localhost:32770/api/Vaccine/Create', {
+    const response = await fetch('https://localhost:32768/api/Vaccine/Create', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -20,7 +20,7 @@ export const CreateVaccine = async (data) => {
 export async function deleteVaccine(vaccineId) {
     try {
         const authToken = localStorage.getItem('token');
-        const response = await fetch(`https://localhost:32770/api/Vaccine/Delete/${vaccineId}`, {
+        const response = await fetch(`https://localhost:32768/api/Vaccine/Delete/${vaccineId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ export async function editVaccine(vaccineId, updatedData) {
         
         const authToken = localStorage.getItem('token');
         console.log(JSON.stringify({ ...updatedData, token: authToken }));
-        const response = await fetch(`https://localhost:32770/api/Vaccine/Update/${vaccineId}`, {
+        const response = await fetch(`https://localhost:32768/api/Vaccine/Update/${vaccineId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ export async function editVaccine(vaccineId, updatedData) {
 export async function fetchVaccines() {
 
     try {
-        const response = await fetch('https://localhost:32770/api/Vaccine', {
+        const response = await fetch('https://localhost:32768/api/Vaccine', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

@@ -1,7 +1,7 @@
 
 
 export const authServiceRegister = async (data) => {
-    const response = await fetch('https://localhost:32770/api/Account/Register', {
+    const response = await fetch('https://localhost:32768/api/Account/Register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -19,7 +19,7 @@ export const authServiceRegister = async (data) => {
 }
 
 export const authServiceLogin = async (data) => {
-    const response = await fetch('https://localhost:32770/api/Account/Login', {
+    const response = await fetch('https://localhost:32768/api/Account/Login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

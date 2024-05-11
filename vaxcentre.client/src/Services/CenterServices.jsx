@@ -1,5 +1,5 @@
 export const RegisterVaccineCentre = async (data) => {
-    const response = await fetch('https://localhost:32770/api/Account/VaccineCentreRegister', {
+    const response = await fetch('https://localhost:32768/api/Account/VaccineCentreRegister', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -20,7 +20,7 @@ export const RegisterVaccineCentre = async (data) => {
 export async function fetchCenters() {
 
     try {
-        const response = await fetch('https://localhost:32770/api/VaccineCentre', {
+        const response = await fetch('https://localhost:32768/api/VaccineCentre', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export async function fetchCenters() {
 export async function deleteCenter(centerId) {
     try {
         const authToken = localStorage.getItem('token');
-        const response = await fetch(`https://localhost:32770/api/VaccineCentre/Delete/${centerId}`, {
+        const response = await fetch(`https://localhost:32768/api/VaccineCentre/Delete/${centerId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
