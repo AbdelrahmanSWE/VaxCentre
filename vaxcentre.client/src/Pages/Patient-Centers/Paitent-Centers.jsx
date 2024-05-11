@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import { reserveVaccineAtCenter,reserveSecondDoseAtCenter } from '../../Services/PaitentServices';
-import {  fetchCenters} from "../../Services/AdminServices.jsx";
+import {  fetchCenters} from "../../Services/CenterServices.jsx";
 import '../../App.css';
 
 function Patient() {
@@ -40,20 +40,9 @@ function Patient() {
         <div>
             <h2 className="card title">Centers</h2>
             {centers.map((center) => (
-                <div key={center.centerId} className="card">
-                    <h3>{center.name}</h3>
+                <div key={center.id} className="card">
+                    <h3>{center.displayName}</h3>
                     <ul>
-                        {center.vaccines.map((vaccine) => (
-                            <li key={vaccine.vaccineId}>
-                                {vaccine.name}
-                                <Button variant="danger" className="addBtn" onClick={() => handleReserve(center.centerId, vaccine.vaccineId)} disabled={vaccine.reserved}>
-                                    {vaccine.reserved ? 'Reserved' : 'Reserve'}
-                                </Button>
-                                {vaccine.reserved && (
-                                    <Button variant="secondary" className="addBtn" onClick={() => handleSecondReserve(center.centerId, vaccine.vaccineId)}>Reserve Second Dose</Button>
-                                )}
-                            </li>
-                        ))}
                     </ul>
                 </div>
             ))}

@@ -29,13 +29,13 @@ export async function fetchCenters() {
         });
 
         if (!response.ok) {
-            throw new Error('Failed to fetch patients');
+            throw new Error('Failed to fetch centers');
         }
 
         const data = await response.json();
         return data; // Assuming the response contains an array of patients
     } catch (error) {
-        console.error('Error fetching patients:', error);
+        console.error('Error fetching centers:', error);
         throw error;
     }
 }

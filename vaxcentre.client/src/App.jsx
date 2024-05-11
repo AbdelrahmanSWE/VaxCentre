@@ -1,48 +1,34 @@
-
-import { useEffect, useState } from 'react';
-/*import SignupForm from './Signup-form'*/
-import SigninForm from './Pages/Signin-form/Signin-form';
-import Admin from './Pages/Admin-Centers/Admin-Centers';
-import ListUsers from './Pages/Admin-Centers/Accept-Reject-Users';
-//import Patient from './Patient-Centers'
-import React from 'react';
-//import PatientsVaccination from './Paitents-Vaccination';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import React, { createContext, useState } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import Vaccine from './Pages/Admin-Centers/Admin-Vaccines';
-import './App.css';
 import Patient from './Pages/Patient-Centers/Paitent-Centers';
+import AdminPanel from './Pages/Admin-Centers/Admin-Panal';
+import SignIn from './Pages/Signin-form/Signin-form';
+import SignUp from './Pages/Signup-form/Signup-form';
 
+export const AuthContext = createContext();
 
 const App = () => {
+    const [authState, setAuthState] = useState({
+        isAuthenticated: false,
+        role: null
+    });
+
     return (
-        <div>
-            <Navbar bg="dark" data-bs-theme="dark">
-                <Container>
-                    <Navbar.Brand href="">
-                        <img
-                            alt=""
-                            src=""
-                            width="30"
-                            height="30"
-                            className="d-inline-block align-top"
-                        />{' '}
-                        VaxCenter
-                    </Navbar.Brand>
-                </Container>
-            </Navbar>
-            <Row>
-
-                <Patient /> 
-
-            </Row>
-
-        </div>
-          
+        <AuthContext.Provider value={{ authState, setAuthState }}>
+            <Router>
+                <Navbar />
+                <Switch>
+                    <Route path="/signin" component={SignIn} />
+                    <Route path="/signup" component={SignUp} />
+                    {authState.isAuthenticated && authState.role === 'admin' && <Route path="/admin" component={AdminPanel} />}
+                    {authState.isAuthenticated && authState.role === 'patient' && <Route path="/patient" component={Patient} />}
+                </Switch>
+            </Router>
+        </AuthContext.Provider>
     );
 };
 
