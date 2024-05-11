@@ -109,9 +109,9 @@ namespace VaxCentre.Server.Controllers
             }
             return account.Role switch
             {
-                "Admin" => Ok(new { token }),
-                "VaccineCentre" => Ok(new { token }),
-                "Patient" => Ok(new { token }),
+                "Admin" => Ok(new { token, role= "Admin" }),
+                "VaccineCentre" => Ok(new { token, role = "VaccineCentre" }),
+                "Patient" => Ok(new { token, role = "Patient" }),
                 _ => Unauthorized("Unauth"),
             };
         }

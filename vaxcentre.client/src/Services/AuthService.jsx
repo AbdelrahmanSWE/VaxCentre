@@ -36,6 +36,7 @@ export const authServiceLogin = async (data) => {
 
     // Save the token in local storage
     localStorage.setItem('token', responseData.token);
+    localStorage.setItem('role', responseData.role);
 
     return responseData;
 }
