@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
+import { reserveVaccineAtCenter,reserveSecondDoseAtCenter } from '../../Services/PaitentServices';
 import '../../App.css';
 
 function Patient() {
@@ -34,12 +35,22 @@ function Patient() {
         // Handle center click
     };*/
 
-    const handleReserve = (centerId, vaccineId) => {
-        // Handle reservation
+    const handleReserve = async (centerId, vaccineId) => {
+        try {
+            const response = await reserveVaccineAtCenter(centerId, vaccineId);
+            console.log(response);
+        } catch (error) {
+            console.error('Error reserving vaccine:', error);
+        }
     };
 
-    const handleSecondReserve = (centerId, vaccineId) => {
-        // Handle second dose reservation
+    const handleSecondReserve = async (centerId, vaccineId) => {
+        try {
+            const response = await reserveSecondDoseAtCenter(centerId, vaccineId);
+            console.log(response);
+        } catch (error) {
+            console.error('Error reserving second dose:', error);
+        }
     };
 
     return (
