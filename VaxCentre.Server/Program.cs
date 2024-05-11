@@ -41,6 +41,7 @@ builder.Services.AddScoped<IVaccineRepository, VaccineRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IVaccineCentreRepository, VaccineCentreRepository>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+builder.Services.AddScoped<IRecieptRepository, RecieptRepository>();
 
 builder.Services.AddScoped<AuthService>();
 

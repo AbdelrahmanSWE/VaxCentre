@@ -23,7 +23,9 @@ const App = () => {
             <Row>
                 <Col><Patient /></Col> 
             </Row>
+
         </div>
+          
     );
 };
 

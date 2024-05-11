@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using VaxCentre.Server.Data.Interfaces;
 using VaxCentre.Server.Dtos.Vaccine;
 using VaxCentre.Server.Models;
+using VaxCentre.Server.Services;
 
 namespace VaxCentre.Server.Controllers
 {
@@ -13,10 +14,12 @@ namespace VaxCentre.Server.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IVaccineRepository _repository;
-        public VaccineController(IMapper mapper, IVaccineRepository repository)
+        private readonly AuthService _authService;
+        public VaccineController(AuthService authService,IMapper mapper, IVaccineRepository repository)
         {
             _mapper = mapper;
             _repository = repository;
+            _authService = authService;
         }
 
         [HttpGet]
@@ -93,10 +96,12 @@ namespace VaxCentre.Server.Controllers
 
 
         [HttpPost("Create")]
-        public async Task<IActionResult> CreateVaccine(CreateVaccineDto input)
+        public async Task<IActionResult> CreateVaccine(CreateVaccineDto input, string token)
         {
             try
             {
+                //authorize access bye role
+                if (!_authService.AuthorizeRole(token, "Admin")) return Unauthorized("Invalid Role authorization");
                 if (ModelState.IsValid)
                 {
                     Vaccine vaccine = _mapper.Map<Vaccine>(input);
@@ -113,10 +118,12 @@ namespace VaxCentre.Server.Controllers
 
 
         [HttpPost("Update/{Id}")]
-        public async Task<IActionResult> UpdateVaccine(UpdateVaccineDto input, [FromRoute] int Id)
+        public async Task<IActionResult> UpdateVaccine(UpdateVaccineDto input, [FromRoute] int Id,string token)
         {
             try
             {
+                //authorize access bye role
+                if (!_authService.AuthorizeRole(token, "Admin")) return Unauthorized("Invalid Role authorization");
                 if (Id <= 0)
                 {
                     return BadRequest("Invalid Id");
@@ -140,10 +147,12 @@ namespace VaxCentre.Server.Controllers
 
 
         [HttpDelete("Delete/{Id}")]
-        public async Task<IActionResult> RemoveVaccine([FromRoute] int Id)
+        public async Task<IActionResult> RemoveVaccine([FromRoute] int Id,string token)
         {
             try
             {
+                //authorize access bye role
+                if (!_authService.AuthorizeRole(token, "Admin")) return Unauthorized("Invalid Role authorization");
                 if (Id <= 0)
                 {
                     return BadRequest("Invalid Id");
