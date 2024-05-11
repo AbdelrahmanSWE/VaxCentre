@@ -1,65 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
+import { reserveVaccineAtCenter,reserveSecondDoseAtCenter } from '../../Services/PaitentServices';
+import {  fetchCenters} from "../../Services/CenterServices.jsx";
 import '../../App.css';
 
 function Patient() {
-    const [centers, setCenters] = useState([
-        {
-            centerId: 1,
-            name: 'Center 1',
-            vaccines: [
-                { vaccineId: 101, name: 'Vaccine A', reserved: false },
-                { vaccineId: 102, name: 'Vaccine B', reserved: false }
-            ]
-        },
-        {
-            centerId: 2,
-            name: 'Center 2',
-            vaccines: [
-                { vaccineId: 103, name: 'Vaccine C', reserved: false },
-                { vaccineId: 104, name: 'Vaccine D', reserved: false }
-            ]
-        },
-        {
-            centerId: 3,
-            name: 'Center 3',
-            vaccines: [
-                { vaccineId: 105, name: 'Vaccine E', reserved: false },
-                { vaccineId: 106, name: 'Vaccine F', reserved: false }
-            ]
-        }
-    ]);
+    const [centers, setCenters] = useState([]);
+    useEffect(() => {
+        // Fetch patients when the component mounts
+        fetchCenters()
+            .then((data) => setCenters(data))
+            .catch((error) => console.error('Error fetching centers:', error));
+    }, []);
+        
 
     /*const handleCenterClick = (centerId) => {
         // Handle center click
     };*/
 
-    const handleReserve = (centerId, vaccineId) => {
-        // Handle reservation
+    const handleReserve = async (centerId, vaccineId) => {
+        try {
+            const response = await reserveVaccineAtCenter(centerId, vaccineId);
+            console.log(response);
+        } catch (error) {
+            console.error('Error reserving vaccine:', error);
+        }
     };
 
-    const handleSecondReserve = (centerId, vaccineId) => {
-        // Handle second dose reservation
+    const handleSecondReserve = async (centerId, vaccineId) => {
+        try {
+            const response = await reserveSecondDoseAtCenter(centerId, vaccineId);
+            console.log(response);
+        } catch (error) {
+            console.error('Error reserving second dose:', error);
+        }
     };
 
     return (
         <div>
             <h2 className="card title">Centers</h2>
             {centers.map((center) => (
-                <div key={center.centerId} className="card">
-                    <h3>{center.name}</h3>
+                <div key={center.id} className="card">
+                    <h3>{center.displayName}</h3>
                     <ul>
-                        {center.vaccines.map((vaccine) => (
-                            <li key={vaccine.vaccineId}>
-                                {vaccine.name}
-                                <Button variant="danger" className="addBtn" onClick={() => handleReserve(center.centerId, vaccine.vaccineId)} disabled={vaccine.reserved}>
-                                    {vaccine.reserved ? 'Reserved' : 'Reserve'}
-                                </Button>
-                                {vaccine.reserved && (
-                                    <Button variant="secondary" className="addBtn" onClick={() => handleSecondReserve(center.centerId, vaccine.vaccineId)}>Reserve Second Dose</Button>
-                                )}
-                            </li>
-                        ))}
                     </ul>
                 </div>
             ))}
