@@ -41,9 +41,11 @@ export async function deleteVaccine(vaccineId) {
 
 export async function editVaccine(vaccineId, updatedData) {
     try {
+        
         const authToken = localStorage.getItem('token');
+        console.log(JSON.stringify({ ...updatedData, token: authToken }));
         const response = await fetch(`https://localhost:32770/api/Vaccine/Update/${vaccineId}`, {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },

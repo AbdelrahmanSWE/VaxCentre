@@ -107,12 +107,14 @@ namespace VaxCentre.Server.Controllers
         }
 
         [HttpGet("Assign/{Id}")]
-        public async Task<IActionResult> AssignVaccineToCentre([FromRoute] int Id, int VaccineId, string token)
+        public async Task<IActionResult> AssignVaccineToCentre([FromRoute] int Id , Dictionary<string, string> data)
         {
             try
             {
+                string token = data["token"];
+                int VaccineId = int.Parse(data["VaccineId"]);
                 //authorize access bye role
-                if (!_authService.AuthorizeRole(token, "VaccineCentre")) return Unauthorized("Invalid Role authorization");
+                if (!_authService.AuthorizeRole(token, "Admin")) return Unauthorized("Invalid Role authorization");
                 var vaccineCentre = await _repository.AssignVaccineToCentre(Id, VaccineId);
 
 

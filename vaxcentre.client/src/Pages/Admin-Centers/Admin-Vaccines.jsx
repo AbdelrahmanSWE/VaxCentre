@@ -66,6 +66,7 @@ function Vaccine() {
             console.error('Error updating vaccine:', error);
         }
     };
+
     const handleEdit = (vaccine) => {
         // Set the selectedVaccine state to the vaccine that should be edited
         setSelectedVaccine(vaccine);
@@ -150,7 +151,7 @@ function Vaccine() {
                             </label>
                             <label>
                                 Gap Time:
-                                <input type="number" value={selectedVaccine.gapTime} onChange={(e) => setSelectedVaccine({ ...selectedVaccine, gapTime: e.target.value })} />
+                                <input type="text" value={selectedVaccine.gapTime} onChange={(e) => setSelectedVaccine({ ...selectedVaccine, gapTime: e.target.value })} />
                             </label>
                         </>
                     )}

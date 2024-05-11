@@ -28,7 +28,8 @@ namespace VaxCentre.Server.Controllers
             try
             {
                 var result = await _repository.GetAllAsync();
-                return Ok(result);
+                var vaccineDtos = _mapper.Map<List<VaccineDisplayDto>>(result);
+                return Ok(vaccineDtos);
             }
             catch (Exception ex)
             {
@@ -125,17 +126,17 @@ namespace VaxCentre.Server.Controllers
         }
 
 
-        [HttpPost("Update/{Id}")]
+        [HttpPut("Update/{Id}")]
         public async Task<IActionResult> UpdateVaccine(Dictionary<string, string> data, [FromRoute] int Id)
         {
             try
             {
                 string token = data["token"];
                 UpdateVaccineDto input = new UpdateVaccineDto {
-                    Name = data["Name"],
-                    Description = data["Description"],
-                    Precaution = data["Precaution"],
-                    GapTime = int.Parse(data["GapTime"])
+                    Name = data["name"],
+                    Description = data["description"],
+                    Precaution = data["precaution"],
+                    GapTime = int.Parse(data["gapTime"])
                 };
                 //authorize access bye role
                 if (!_authService.AuthorizeRole(token, "Admin")) return Unauthorized("Invalid Role authorization");
