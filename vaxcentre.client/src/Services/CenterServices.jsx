@@ -64,6 +64,7 @@ export async function deleteCenter(centerId) {
 export async function addVaccineToCenter(centerId, vaccineId) {
     try {
         const authToken = localStorage.getItem('token');
+        console.log(JSON.stringify({ token: authToken, VaccineId: vaccineId }));
         const response = await fetch(`https://localhost:32768/api/VaccineCentre/Assign/${centerId}`, {
             method: 'POST',
             headers: {

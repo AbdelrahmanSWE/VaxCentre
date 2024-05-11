@@ -106,7 +106,7 @@ namespace VaxCentre.Server.Controllers
             }
         }
 
-        [HttpGet("Assign/{Id}")]
+        [HttpPost("Assign/{Id}")]
         public async Task<IActionResult> AssignVaccineToCentre([FromRoute] int Id , Dictionary<string, string> data)
         {
             try

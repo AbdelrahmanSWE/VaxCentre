@@ -84,13 +84,13 @@ function Admin() {
 
     }
 
-    const addVaccine = (event) => {
-    
+    const addVaccine = (event, centerId) => {
         event.preventDefault();
-        const vaccineId = document.getElementById('vaxId').value;
-        addVaccineToCenter(selectedCenter.id,vaccineId);
-    
-        document.getElementById('vaxId').value = '';
+        const vaccineId = document.getElementById(`vaxId-${centerId}`).value;
+        const centreId = document.getElementById(`centreId-${centerId}`).value;
+        addVaccineToCenter(centreId, vaccineId);
+
+        document.getElementById(`vaxId-${centerId}`).value = '';
     };
 
     return (
@@ -151,12 +151,11 @@ function Admin() {
                     <div className='card' key={center.id}>
                         <h2>{center.displayName}</h2>
                         <ul>
-                            {center.vaccines.map((vaccine) => (
-                                <li key={vaccine}>{vaccine}</li>
-                            ))}
+
                         </ul>
-                        <form onSubmit={addVaccine}>
-                            <input id="vaxId" type="text" placeholder="Add Vaccine"></input>
+                        <form onSubmit={(event) => addVaccine(event, center.id)}>
+                            <input id={`centreId-${center.id}`} type="hidden" placeholder="Add Vaccine" value={center.id}></input>
+                            <input id={`vaxId-${center.id}`} type="text" placeholder="Add Vaccine"></input>
                             <Button variant="primary" type="submit">Add Vaccine</Button>
                         </form>
                         <Button variant="danger" onClick={() => handleDelete(center.id)}>Delete</Button>
