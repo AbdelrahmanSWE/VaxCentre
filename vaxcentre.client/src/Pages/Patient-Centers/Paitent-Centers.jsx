@@ -1,35 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import { reserveVaccineAtCenter,reserveSecondDoseAtCenter } from '../../Services/PaitentServices';
+import {  fetchCenters} from "../../Services/AdminServices.jsx";
 import '../../App.css';
 
 function Patient() {
-    const [centers, setCenters] = useState([
-        {
-            centerId: 1,
-            name: 'Center 1',
-            vaccines: [
-                { vaccineId: 101, name: 'Vaccine A', reserved: false },
-                { vaccineId: 102, name: 'Vaccine B', reserved: false }
-            ]
-        },
-        {
-            centerId: 2,
-            name: 'Center 2',
-            vaccines: [
-                { vaccineId: 103, name: 'Vaccine C', reserved: false },
-                { vaccineId: 104, name: 'Vaccine D', reserved: false }
-            ]
-        },
-        {
-            centerId: 3,
-            name: 'Center 3',
-            vaccines: [
-                { vaccineId: 105, name: 'Vaccine E', reserved: false },
-                { vaccineId: 106, name: 'Vaccine F', reserved: false }
-            ]
-        }
-    ]);
+    const [centers, setCenters] = useState([]);
+    useEffect(() => {
+        // Fetch patients when the component mounts
+        fetchCenters()
+            .then((data) => setCenters(data))
+            .catch((error) => console.error('Error fetching centers:', error));
+    }, []);
+        
 
     /*const handleCenterClick = (centerId) => {
         // Handle center click
