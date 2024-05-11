@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
+import { Navbar, Container, Row, Col } from 'react-bootstrap';
 import './App.css';
+import Patient from './Pages/Patient-Centers/Paitent-Centers';
 
-function App() {
+const App = () => {
     return (
-        <>
+        <div>
             <Navbar bg="dark" data-bs-theme="dark">
                 <Container>
                     <Navbar.Brand href="">
@@ -19,14 +21,12 @@ function App() {
                 </Container>
             </Navbar>
             <Row>
-                <Col><ListUsers /></Col>
-                <Col xs={5}><Admin /></Col>
-                <Col><PatientsVaccination /></Col>
+                <Col><Patient /></Col> 
             </Row>
-            
-            
-        </>
+
+        </div>
+          
     );
-}
+};
 
 export default App;
